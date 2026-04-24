@@ -87,13 +87,12 @@ const DISTINCTIVE_PREFIXES = {
       const writingBlock = blk.find(b => b.requirementValue === "WRITING") || {};
 
       const college = this._extractCollegeFromAdviceJump(raw);
-      console.log("Student's college identified as:", college);
 
       return {
         studentId:    h.studentId,
         studentName:  h.studentName,
         studentEmail: h.studentEmail,
-        college:      "BMCC (CUNY)",
+        college:     college.name,
 
         degreeType:  degreeBlock.degree  || h.auditType,
         degreeName:  degreeBlock.title,
@@ -181,7 +180,7 @@ _extractCollegeFromAdviceJump(audit) {
     return { ...CUNY_COLLEGES[top[0]], slug: top[0], method: 'prefix', confidence: 'medium' };
   }
 
-  return { name: 'Unknown', code: null, slug: null, method: 'none', confidence: 'none' };
+  return { name: 'CUNY', code: null, slug: null, method: 'none', confidence: 'none' };
 },
     
     _creditsRemaining(degreeBlock) {
@@ -388,7 +387,7 @@ _extractCollegeFromAdviceJump(audit) {
               <div class="cuny-avatar">AI</div>
               <div>
                 <div class="cuny-ttl">Academic Advisor</div>
-                <div class="cuny-sub" id="cuny-sub">CUNY · BMCC</div>
+                <div class="cuny-sub" id="cuny-sub">CUNY</div>
               </div>
             </div>
             <div class="cuny-hdr-btns">
@@ -611,7 +610,7 @@ _extractCollegeFromAdviceJump(audit) {
       const { apiKey } = await chrome.runtime.sendMessage({ type: "GET_API_KEY" });
 
       const systemPrompt = this.dataLoaded
-        ? `You are a knowledgeable, warm academic advisor for CUNY students at BMCC. You have the student's complete DegreeWorks audit data below. Use it to give precise, specific, actionable advice.
+        ? `You are a knowledgeable, warm academic advisor for CUNY students at ${this.college}. You have the student's complete DegreeWorks audit data below. Use it to give precise, specific, actionable advice.
 
 ${this.context}
 
@@ -622,10 +621,10 @@ Advisor guidelines:
 - Point out courses that satisfy multiple requirements (gen ed + major) when possible
 - If the student asks about something not in the audit data, say so and give general guidance
 - Format lists with bullet points for readability
-- You know CUNY transfer policies, BMCC course offerings, CUNY Pathways requirements, and ASAP/MAP program benefits`
+- You know CUNY transfer policies, ${this.college} course offerings, CUNY Pathways requirements, and ASAP/MAP program benefits`
 
-        : `You are a helpful CUNY academic advisor at BMCC. The student's DegreeWorks audit hasn't loaded yet in the browser. 
-Answer general CUNY/BMCC advising questions as best you can. Let them know that once their audit loads you'll be able to give much more specific advice based on their actual record.`;
+        : `You are a helpful CUNY academic advisor at ${this.college}. The student's DegreeWorks audit hasn't loaded yet in the browser. 
+Answer general CUNY/${this.college} advising questions as best you can. Let them know that once their audit loads you'll be able to give much more specific advice based on their actual record.`;
 
       // Build conversation history (exclude the system-level welcome if data not loaded)
       const history = this.messages
