@@ -635,7 +635,7 @@ Answer general CUNY/${this.college} advising questions as best you can. Let them
 
       try {
         const res = await chrome.runtime.sendMessage({
-          type: "CALL_CLAUDE",
+          type: "CALL_AI",
           payload: { messages: history, systemPrompt, apiKey }
         });
         this._hideTyping();
