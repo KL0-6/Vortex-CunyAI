@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CUNY Advisor Settings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 320px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f8faff;
+      color: #1a1a2e;
+    }
+
+    .header {
+      background: #003366;
+      color: white;
+      padding: 18px 20px 14px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .header p {
+      font-size: 11.5px;
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #445;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .field-label a {
+      color: #003366;
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 11px;
+    }
+
+    .field-label a:hover { text-decoration: underline; }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      padding: 9px 38px 9px 12px;
+      border: 1.5px solid #dde3ef;
+      border-radius: 9px;
+      font-size: 13px;
+      background: white;
+      color: #1a1a2e;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus { border-color: #003366; }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #889;
+      padding: 2px;
+      display: flex;
+    }
+
+    .toggle-visibility:hover { color: #003366; }
+
+    .save-btn {
+      width: 100%;
+      margin-top: 14px;
+      padding: 10px;
+      background: #003366;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .save-btn:hover { background: #004499; }
+
+    .status {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .status.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+    .status.error { background: #fce4e4; color: #c62828; border: 1px solid #ffcdd2; }
+    .status.show { display: block; }
+
+    .divider { border: none; border-top: 1px solid #eef0f5; margin: 18px 0 14px; }
+
+    .info-section { font-size: 12px; color: #556; }
+    .info-section h3 { font-size: 12px; font-weight: 700; color: #334; margin-bottom: 8px; }
+
+    .step {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 7px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 18px;
+      height: 18px;
+      background: #003366;
+      color: white;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .key-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 7px 10px;
+      background: #f0f4fa;
+      border-radius: 8px;
+      font-size: 11.5px;
+      color: #556;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ccc;
+    }
+
+    .dot.active { background: #4caf50; }
+    .dot.inactive { background: #ccc; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>CUNY Academic Advisor</h1>
+    <p>AI-powered degree planning assistant</p>
+    <div class="badge">⚡ Powered by Claude</div>
+  </div>
+
+  <div class="content">
+    <div class="field-label">
+      <span>Anthropic API Key</span>
+      <a href="https://console.anthropic.com/account/keys" target="_blank">Get a key →</a>
+    </div>
+    <div class="input-wrapper">
+      <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off" />
+      <button class="toggle-visibility" id="toggle-vis" title="Show/hide key">
+        <svg id="eye-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+    <button class="save-btn" id="save-btn">Save API Key</button>
+    <div class="status" id="status-msg"></div>
+
+    <div class="key-status">
+      <div class="dot" id="key-dot"></div>
+      <span id="key-status-text">No API key saved</span>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="info-section">
+      <h3>How to use</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <span>Add your Anthropic API key above (it's stored locally in your browser)</span>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <span>Navigate to DegreeWorks on the CUNY portal</span>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <span>Click the <strong>Advisor</strong> button in the bottom-right corner</span>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <span>Ask anything about your degree progress, courses, or graduation plan!</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

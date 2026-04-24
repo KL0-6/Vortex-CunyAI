@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "CUNY Academic Advisor",
+  "version": "1.1.0",
+  "description": "AI-powered academic advisor that reads your DegreeWorks progress and helps you plan your path to graduation.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://*.cuny.edu/*",
+    "https://degreeworks.cuny.edu/*",
+    "https://api.anthropic.com/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["injected.js", "panel.css"],
+      "matches": ["https://*.cuny.edu/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://degreeworks.cuny.edu/*",
+        "https://*.degreeworks.cuny.edu/*",
+        "https://www.degreeworks.cuny.edu/*"
+      ],
+      "js": ["content.js"],
+      "css": ["panel.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "CUNY Academic Advisor"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
