@@ -1,0 +1,10 @@
+{
+  "name": "backend",
+  "main": "index.js",
+  "module": "index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run index.js"
+  }
+}
