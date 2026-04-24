@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUNY Academic Advisor — AI-Powered Degree Planning Extension</title>
+  <meta name="description" content="Your AI-powered academic advisor for CUNY. Get personalized degree guidance, transfer recommendations, and graduation planning — all inside DegreeWorks." />
+  <link rel="icon" href="images/vortex-icon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="#" class="nav-logo">
+      <img src="images/vortex-icon.png" alt="Vortex — CUNY Advisor" />
+      <span>CUNY Advisor</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#transfer">Transfer</a></li>
+      <li><a href="#testimonials">Students</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#cta" class="btn btn-primary">Install Extension</a>
+    </div>
+    <button class="mobile-toggle" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <img src="images/hero.png" alt="" aria-hidden="true" />
+  </div>
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-content fade-up">
+      <div class="badge"><span class="dot"></span> Chrome Extension — Free & Open Source</div>
+      <h1>
+        Your AI Academic
+        <span class="line-break"><span class="highlight">Advisor</span>, Always On.</span>
+      </h1>
+      <p>An intelligent browser extension that reads your DegreeWorks audit and gives you personalized advice — courses to take, transfer plans, and graduation roadmaps.</p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-primary">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Add to Chrome
+        </a>
+        <a href="#how-it-works" class="btn btn-secondary">
+          See How It Works
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-value" data-counter data-target="25" data-suffix="+">0</div>
+          <div class="stat-label">CUNY Campuses</div>
+        </div>
+        <div>
+          <div class="stat-value" data-counter data-target="100" data-suffix="%">0</div>
+          <div class="stat-label">Free to Use</div>
+        </div>
+        <div>
+          <div class="stat-value" data-counter data-target="3.5" data-suffix="★">0</div>
+          <div class="stat-label">Avg. GPA Boost</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual fade-up">
+      <img src="images/screenshot1.png" alt="CUNY Advisor extension showing degree audit analysis" class="hero-screenshot screenshot-slide active" />
+      <img src="images/screenshot2.png" alt="CUNY Advisor extension setup screen" class="hero-screenshot screenshot-slide" style="position:absolute;top:0;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.8s ease;" />
+      <div class="hero-float-card">
+        <div class="icon-circle">🎓</div>
+        <div class="card-text">
+          <div class="card-title">76% Complete</div>
+          <div class="card-sub">12 credits to graduation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURES ─── -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="badge"><span class="dot"></span> Features</div>
+      <h2>Everything you need to <span class="highlight">stay on track</span></h2>
+      <p>Built specifically for CUNY students, powered by AI that understands your degree requirements.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">📊</div>
+        <h3>DegreeWorks Integration</h3>
+        <p>Automatically reads your degree audit — credits completed, GPA, major requirements, and Gen Ed status — directly from your browser.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🤖</div>
+        <h3>AI-Powered Advising</h3>
+        <p>Powered by Claude AI, get instant answers about remaining requirements, course recommendations, and personalized graduation plans.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🗓️</div>
+        <h3>Semester Planning</h3>
+        <p>Get smart suggestions for your next semester's course load based on prerequisites, availability, and your optimal path to graduation.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🔄</div>
+        <h3>Transfer Planning</h3>
+        <p>Explore transfer options across CUNY schools. See which credits transfer, find strong programs for your major, and plan your move.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">📈</div>
+        <h3>GPA Tracking</h3>
+        <p>Monitor your cumulative and major GPA in real-time. Get alerts and strategies if your GPA needs attention for your goals.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🔒</div>
+        <h3>Privacy-First</h3>
+        <p>Your data never leaves your browser. The AI processes everything locally using your own API key — no data collection, ever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="badge"><span class="dot"></span> How It Works</div>
+      <h2>Up and running in <span class="highlight">under 2 minutes</span></h2>
+      <p>No complicated setup. Install, add your key, and start getting AI-powered academic advice.</p>
+    </div>
+    <div class="steps-container">
+      <div class="steps-list">
+        <div class="step-item fade-up">
+          <div class="step-number">1</div>
+          <div>
+            <h3>Install the Chrome Extension</h3>
+            <p>Add CUNY Academic Advisor from the Chrome Web Store with a single click. It's lightweight and free.</p>
+          </div>
+        </div>
+        <div class="step-item fade-up">
+          <div class="step-number">2</div>
+          <div>
+            <h3>Add Your API Key</h3>
+            <p>Enter your Anthropic API key — it's stored locally in your browser and never sent to any external server.</p>
+          </div>
+        </div>
+        <div class="step-item fade-up">
+          <div class="step-number">3</div>
+          <div>
+            <h3>Navigate to DegreeWorks</h3>
+            <p>Log in to your CUNY account and go to DegreeWorks. The extension will automatically detect your degree audit.</p>
+          </div>
+        </div>
+        <div class="step-item fade-up">
+          <div class="step-number">4</div>
+          <div>
+            <h3>Start Chatting with Your Advisor</h3>
+            <p>Click the Advisor button and ask anything — remaining requirements, next semester plans, transfer options, and more.</p>
+          </div>
+        </div>
+      </div>
+      <div class="steps-visual fade-up">
+        <img src="images/screenshot2.png" alt="Extension setup flow showing API key entry and how-to-use guide" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TRANSFER ─── -->
+<section class="transfer" id="transfer">
+  <div class="container">
+    <div class="transfer-grid">
+      <div class="transfer-visual fade-up">
+        <img src="images/transfer.png" alt="Transfer planning visualization between CUNY schools" />
+      </div>
+      <div class="transfer-content fade-up">
+        <div class="badge" style="margin-bottom:20px;"><span class="dot"></span> Transfer Planning</div>
+        <h2>Thinking about <span class="highlight">transferring?</span></h2>
+        <p>Navigate the CUNY transfer process with confidence. Our AI knows the requirements across all 25 campuses and can build a personalized plan for your move.</p>
+        <div class="transfer-features">
+          <div class="tf-item">
+            <div class="tf-icon">🏫</div>
+            <div>
+              <h4>Cross-Campus Course Matching</h4>
+              <p>See exactly which courses at other CUNY schools satisfy your remaining requirements.</p>
+            </div>
+          </div>
+          <div class="tf-item">
+            <div class="tf-icon">⭐</div>
+            <div>
+              <h4>Program Recommendations</h4>
+              <p>Discover which CUNY colleges offer the strongest programs for your major and career goals.</p>
+            </div>
+          </div>
+          <div class="tf-item">
+            <div class="tf-icon">📋</div>
+            <div>
+              <h4>Credit Transfer Analysis</h4>
+              <p>Know before you transfer — see which credits will carry over and which courses you'll still need.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ─── -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-header fade-up">
+      <div class="badge"><span class="dot"></span> Student Stories</div>
+      <h2>Trusted by <span class="highlight">CUNY students</span></h2>
+      <p>Hear from students who used CUNY Advisor to plan their academic journey.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card fade-up">
+        <div class="quote-icon">"</div>
+        <p class="quote">I was lost trying to figure out which Gen Eds I still needed. This extension broke it all down in seconds and suggested the best courses for next semester.</p>
+        <div class="author">
+          <div class="author-avatar">MR</div>
+          <div class="author-info">
+            <div class="name">Maria R.</div>
+            <div class="school">Bronx Community College</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up">
+        <div class="quote-icon">"</div>
+        <p class="quote">The transfer planning feature saved me a whole semester. I knew exactly which credits would transfer to Baruch before I even applied.</p>
+        <div class="author">
+          <div class="author-avatar">JT</div>
+          <div class="author-info">
+            <div class="name">James T.</div>
+            <div class="school">LaGuardia CC → Baruch College</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up">
+        <div class="quote-icon">"</div>
+        <p class="quote">It's like having a real advisor available 24/7. I ask it about my graduation timeline and it gives me a clear plan every time. A must-have for any CUNY student.</p>
+        <div class="author">
+          <div class="author-avatar">SK</div>
+          <div class="author-info">
+            <div class="name">Sarah K.</div>
+            <div class="school">City College of New York</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section class="cta-section" id="cta">
+  <div class="container">
+    <div class="cta-box fade-up">
+      <h2>Ready to take control of your <span class="highlight">academic future?</span></h2>
+      <p>Install CUNY Academic Advisor today — it's free, private, and built for CUNY students like you.</p>
+      <a href="#" class="btn btn-primary" style="font-size:1.1rem;padding:16px 40px;">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Install Free Extension
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── VORTEX TEAM BANNER ─── -->
+<div class="vortex-banner">
+  <img src="images/vortex-logo.png" alt="Vortex Team" />
+  <span>Built by <span class="team-name">Team Vortex</span> — for CUNY students, by CUNY students</span>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-logo">
+      <img src="images/vortex-logo.png" alt="Vortex — CUNY Advisor" />
+      <span>CUNY Advisor</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#transfer">Transfer</a></li>
+      <li><a href="https://github.com" target="_blank">GitHub</a></li>
+    </ul>
+    <div class="footer-copy">&copy; 2026 CUNY Academic Advisor. Not affiliated with CUNY.</div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
