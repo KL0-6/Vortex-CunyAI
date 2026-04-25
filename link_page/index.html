@@ -381,20 +381,184 @@
     to   { transform: rotate(360deg); }
   }
 
-  /* Responsive */
+  /* Responsive — Tablet and below */
   @media (max-width: 960px) {
-    html, body { overflow: auto; }
+    html, body {
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: auto;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh; /* Handles iOS Safari URL bar */
+      height: auto;
+    }
+
+    header {
+      padding: 1.25rem 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .meta {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+    }
+
     main {
       grid-template-columns: 1fr;
-      gap: 1.5rem;
-      padding: 1rem 1.5rem;
+      gap: 2rem;
+      padding: 1.5rem 1.5rem;
+      align-items: start;
     }
-    .right { order: -1; }
-    .logo-stage { width: 60%; max-width: 280px; }
-    header, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
-    footer { margin: 0 1.5rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
-    .footer-right { text-align: left; }
-    h1 { font-size: clamp(2.25rem, 8vw, 3.5rem); }
+
+    .left {
+      padding-right: 0;
+      text-align: center;
+    }
+
+    .eyebrow {
+      justify-content: center;
+    }
+
+    .lede {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .actions {
+      justify-content: center;
+    }
+
+    .right {
+      order: -1;
+      height: auto;
+    }
+
+    .logo-stage {
+      width: min(60%, 240px);
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 8vw, 3.5rem);
+    }
+
+    footer {
+      margin: 0 1.5rem;
+      padding: 1.25rem 0 1.5rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .footer-right {
+      text-align: left;
+    }
+  }
+
+  /* Tablet portrait (iPad mini, iPad, iPad Pro) — bigger centered logo */
+  @media (min-width: 700px) and (max-width: 960px) {
+    main {
+      gap: 2.5rem;
+      padding: 2rem 2rem 1.5rem;
+    }
+
+    .logo-stage {
+      width: min(55%, 340px);
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: clamp(2.75rem, 6vw, 3.75rem);
+    }
+
+    .lede {
+      font-size: 1.05rem;
+      max-width: 32rem;
+    }
+
+    header {
+      padding: 1.5rem 2rem;
+    }
+
+    footer {
+      margin: 0 2rem;
+    }
+  }
+
+  /* Responsive — Phone */
+  @media (max-width: 540px) {
+    header {
+      padding: 1rem 1.25rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+
+    .meta {
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+    }
+
+    main {
+      padding: 1rem 1.25rem 2rem;
+      gap: 1.5rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 9vw, 2.75rem);
+      line-height: 1.05;
+      margin-bottom: 1.1rem;
+    }
+
+    .lede {
+      font-size: 0.95rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .actions {
+      flex-direction: column;
+      width: 100%;
+      gap: 0.65rem;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+      padding: 0.9rem 1.25rem;
+    }
+
+    .logo-stage {
+      width: min(45%, 150px);
+    }
+
+    /* Stop animations on the logo and rings for mobile */
+    .logo-stage::before,
+    .logo-stage::after {
+      animation: none;
+    }
+
+    .logo-stage::before { inset: -4%; }
+    .logo-stage::after { inset: 6%; }
+
+    .logo {
+      animation: fade-in 1.2s ease-out 0.2s both;
+    }
+
+    footer {
+      margin: 0 1.25rem;
+      padding: 1rem 0 1.25rem;
+    }
+  }
+
+  /* Respect users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>
 </head>
