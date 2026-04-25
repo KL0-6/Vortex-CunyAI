@@ -460,6 +460,8 @@ _extractCollegeFromAdviceJump(audit) {
     messages:    [],
     isLoading:   false,
     dataLoaded:  false,
+    targetCollege: null,
+    targetCollegeName: null,
 
     init() {
       this.injectHTML();
@@ -511,6 +513,40 @@ _extractCollegeFromAdviceJump(audit) {
             </div>
           </div>
 
+          <div class="cuny-transfer-bar">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+            <span>Transfer to:</span>
+            <select id="transfer-select">
+              <option value="">— select a college —</option>
+              <optgroup label="Senior Colleges">
+                <option value="BAR01">Baruch College</option>
+                <option value="BKL01">Brooklyn College</option>
+                <option value="CTY01">City College of New York</option>
+                <option value="NYT01">NYC College of Technology</option>
+                <option value="CSI01">College of Staten Island</option>
+                <option value="HUN01">Hunter College</option>
+                <option value="JJC01">John Jay College</option>
+                <option value="LEH01">Lehman College</option>
+                <option value="MEC01">Medgar Evers College</option>
+                <option value="QNS01">Queens College</option>
+                <option value="YRK01">York College</option>
+                <option value="SPS01">School of Professional Studies</option>
+                <option value="SLU01">School of Labor &amp; Urban Studies</option>
+              </optgroup>
+              <optgroup label="Community Colleges">
+                <option value="BMC01">BMCC</option>
+                <option value="BCC01">Bronx Community College</option>
+                <option value="HOS01">Hostos Community College</option>
+                <option value="KCC01">Kingsborough Community College</option>
+                <option value="LAG01">LaGuardia Community College</option>
+                <option value="QCC01">Queensborough Community College</option>
+                <option value="GUT01">Guttman Community College</option>
+              </optgroup>
+            </select>
+          </div>
+
           <div class="cuny-prog-wrap" id="prog-wrap" style="display:none">
             <div class="cuny-prog-meta">
               <span>Graduation Progress</span>
@@ -536,6 +572,7 @@ _extractCollegeFromAdviceJump(audit) {
             <button class="chip" data-q="Am I on track to graduate on time?">Am I on track?</button>
             <button class="chip" data-q="What major courses should I take next semester?">Plan next semester</button>
             <button class="chip" data-q="What gen ed requirements do I still need?">Gen Ed gaps</button>
+            <button class="chip transfer-chip" data-q="Which of my courses will transfer to my target college, and what credits do I still need to complete there?">Transfer plan</button>
           </div>
 
           <div class="cuny-input-wrap">
@@ -600,6 +637,13 @@ _extractCollegeFromAdviceJump(audit) {
           $("cuny-input").value = btn.dataset.q;
           this.send();
         }
+      };
+
+      $("transfer-select").onchange = () => {
+        const sel = $("transfer-select");
+        this.targetCollege = sel.value || null;
+        this.targetCollegeName = sel.value ? sel.options[sel.selectedIndex].text : null;
+        if (this.targetCollege && this.auditData) this._fetchRules();
       };
     },
 
@@ -692,6 +736,31 @@ _extractCollegeFromAdviceJump(audit) {
         .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
     },
 
+    _fetchRules() {
+      const d = this.auditData;
+      if (!d || !this.targetCollege) return;
+      const allCourses = [...(d.completedCourses || []), ...(d.inProgressCourses || [])];
+      const subjects = [...new Set(
+        allCourses
+          .map(c => DISCIPLINE_TO_SUBJECT[c.code.split(' ')[0]])
+          .filter(Boolean)
+      )];
+      chrome.runtime.sendMessage({
+        type: "FETCH_CUNY_RULES",
+        payload: {
+          sendingcollege: d.collegeTransferCode,
+          receivingcollege: this.targetCollege,
+          subjects: subjects.length ? subjects : undefined,
+        }
+      }, response => {
+        if (response?.data) {
+          this.cunyRules = response.data;
+        } else if (response?.error) {
+          console.warn("[CUNY Advisor] Failed to fetch CUNY rules:", response.error);
+        }
+      });
+    },
+
     _transferContext() {
       if (!this.cunyRules?.length || !this.auditData) return '';
       const completed   = new Map((this.auditData.completedCourses  || []).map(c => [c.code, c]));
@@ -710,7 +779,8 @@ _extractCollegeFromAdviceJump(audit) {
       }
       if (!single.length && !combo.length) return '';
 
-      const lines = ['TRANSFER EQUIVALENCIES (your courses → receiving college):'];
+      const collegeName = this.targetCollegeName || 'receiving college';
+      const lines = [`TRANSFER EQUIVALENCIES (your courses → ${collegeName}):`];
       for (const { rule, course } of single) {
         const grade  = course.grade ? ` [${course.grade}]` : ' [in progress]';
         const recv   = rule.receivingTitles.join(' + ') || rule.receivingCodes.join(' + ');
@@ -743,8 +813,11 @@ _extractCollegeFromAdviceJump(audit) {
       const { apiKey } = await chrome.runtime.sendMessage({ type: "GET_API_KEY" });
 
       const transferCtx = this._transferContext();
+      const transferNote = this.targetCollegeName
+        ? ` The student is planning to transfer to ${this.targetCollegeName}.`
+        : '';
       const systemPrompt = this.dataLoaded
-        ? `You are a knowledgeable, warm academic advisor for CUNY students at ${this.college}. You have the student's complete DegreeWorks audit data below. Use it to give precise, specific, actionable advice.
+        ? `You are a knowledgeable, warm academic advisor for CUNY students at ${this.college}.${transferNote} You have the student's complete DegreeWorks audit data below. Use it to give precise, specific, actionable advice.
 
 ${this.context}
 ${transferCtx ? '\n' + transferCtx : ''}
@@ -758,7 +831,7 @@ Advisor guidelines:
 - Format lists with bullet points for readability
 - You know CUNY transfer policies, ${this.college} course offerings, CUNY Pathways requirements, and ASAP/MAP program benefits`
 
-        : `You are a helpful CUNY academic advisor at ${this.college}. The student's DegreeWorks audit hasn't loaded yet in the browser. 
+        : `You are a helpful CUNY academic advisor at ${this.college}. The student's DegreeWorks audit hasn't loaded yet in the browser.
 Answer general CUNY/${this.college} advising questions as best you can. Let them know that once their audit loads you'll be able to give much more specific advice based on their actual record.`;
 
       // Build conversation history (exclude the system-level welcome if data not loaded)
@@ -802,32 +875,8 @@ Answer general CUNY/${this.college} advising questions as best you can. Let them
   // ══════════════════════════════════════════════════════════════════════════
   window.addEventListener("message", e => {
     if (e.source === window && e.data?.__cunyAdvisor) {
-      console.log("[CUNY Advisor] Audit message received, fetching CUNY rules...");
       advisor.updateAuditData(e.data.payload);
-      const d = advisor.auditData;
-      const allCourses = [...(d?.completedCourses || []), ...(d?.inProgressCourses || [])];
-      console.log("[CUNY Advisor] Extracted courses from audit:", allCourses.map(c => c.code));
-      const subjects = [...new Set(
-        allCourses
-          .map(c => DISCIPLINE_TO_SUBJECT[c.code.split(' ')[0]])
-          .filter(Boolean)
-      )];
-      console.log("[CUNY Advisor] Mapped subjects for CUNY rules fetch:", subjects);
-      chrome.runtime.sendMessage({
-        type: "FETCH_CUNY_RULES",
-        payload: {
-          sendingcollege: d?.collegeTransferCode,
-          subjects: subjects.length ? subjects : undefined,
-        }
-      }, response => {
-        console.log("[CUNY Advisor] FETCH_CUNY_RULES response:", response);
-        if (response?.data) {
-          console.log("[CUNY Advisor] CUNY rules loaded:", response);
-          advisor.cunyRules = response.data;
-        } else if (response?.error) {
-          console.warn("[CUNY Advisor] Failed to fetch CUNY rules:", response.error);
-        }
-      });
+      if (advisor.targetCollege) advisor._fetchRules();
     }
   });
 
