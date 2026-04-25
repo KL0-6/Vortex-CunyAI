@@ -532,9 +532,6 @@ _extractCollegeFromAdviceJump(audit) {
               </button>
             </div>
 
-            <div class="cuny-hdr-bar">
-              <div class="cuny-hdr-bar-fill" id="prog-fill" style="width:0%"></div>
-            </div>
           </div>
 
           <div class="cuny-transfer-bar">
@@ -691,10 +688,7 @@ _extractCollegeFromAdviceJump(audit) {
         sub.textContent = `${last} · ${d.college}`;
       }
 
-      // Progress bars
-      const hdrFill = document.getElementById("prog-fill");
-      if (hdrFill) hdrFill.style.width = Math.min(d.credits.percentComplete, 100) + "%";
-
+      // Progress bar
       const wrap  = document.getElementById("prog-wrap");
       const fill  = document.getElementById("prog-fill-bar");
       const cred  = document.getElementById("prog-credits");

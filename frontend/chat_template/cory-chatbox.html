@@ -123,7 +123,7 @@
   .cory-header {
     padding: 18px 22px 0;
     display: grid;
-    grid-template-columns: 48px 1fr auto;
+    grid-template-columns: 48px 1fr;
     align-items: center;
     gap: 14px;
     background: #ffffff;
@@ -152,27 +152,6 @@
     border-radius: 10px;
     justify-self: center;
     line-height: 1;
-  }
-
-  .cory-credits {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--cory-font-display);
-    font-weight: 600;
-    font-size: 15px;
-    color: var(--cory-green-900);
-  }
-
-  .cory-credits-check {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--cory-green-500);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
   }
 
   /* --- credit bar — fills based on used/total ratio --- */
@@ -472,16 +451,6 @@
     <!-- Name -->
     <div class="cory-name">Cory</div>
 
-    <!-- Credits readout -->
-    <div class="cory-credits" aria-live="polite">
-      <span id="cory-credits-text">46/60</span>
-      <span class="cory-credits-check" aria-hidden="true">
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-          <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-    </div>
-
     <!-- Credit bar (fills based on JS-set ratio) -->
     <div class="cory-credit-bar"
          role="progressbar"
@@ -589,7 +558,6 @@ Below are a few areas we can explore:</div>
   const $input    = document.getElementById('cory-input');
   const $send     = document.getElementById('cory-send');
   const $chips    = document.querySelectorAll('.cory-chip');
-  const $creditsText = document.getElementById('cory-credits-text');
   const $creditFill  = document.getElementById('cory-credit-fill');
   const $creditBar   = document.querySelector('.cory-credit-bar');
 
@@ -600,7 +568,6 @@ Below are a few areas we can explore:</div>
     const remaining = state.creditsTotal - state.creditsUsed;
     const pctRemaining = Math.max(0, Math.min(100, (remaining / state.creditsTotal) * 100));
 
-    $creditsText.textContent = remaining + '/' + state.creditsTotal;
     $creditFill.style.width = pctRemaining + '%';
 
     // color-shift bar at thresholds
