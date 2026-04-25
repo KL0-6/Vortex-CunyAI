@@ -24,7 +24,7 @@
         "https://degreeworks.cuny.edu/*",
         "https://*.degreeworks.cuny.edu/*"
       ],
-      "js": ["content.js"],
+      "js": ["content.bundle.js"],
       "css": ["panel.css"],
       "run_at": "document_idle"
     }
