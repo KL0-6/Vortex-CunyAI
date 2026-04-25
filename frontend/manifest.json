@@ -3,12 +3,13 @@
   "name": "CUNY Academic Advisor",
   "version": "1.1.0",
   "description": "AI-powered academic advisor that reads your DegreeWorks progress and helps you plan your path to graduation.",
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "activeTab", "scripting"],
+  
   "host_permissions": [
     "https://*.cuny.edu/*",
     "https://api.groq.com/*",
     "https://explorer.cuny.edu/*"
-  ],
+    ] ,
   "web_accessible_resources": [
     {
       "resources": ["injected.js", "panel.css"],
