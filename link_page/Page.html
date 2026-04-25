@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vortex — AI academic advisor for CUNY</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1F5B4A;
+    --forest-deep: #173E33;
+    --emerald: #2E8466;
+    --sage: #7FB3A0;
+    --mint: #C8E0D4;
+    --cream: #F5F2E8;
+    --cream-dark: #ECE7D7;
+    --ink: #1A2E25;
+    --gray: #5F6B66;
+    --gray-light: #A8B0AB;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    background: var(--cream);
+    background-image:
+      radial-gradient(ellipse 60% 50% at 85% 110%, rgba(127, 179, 160, 0.18), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% -10%, rgba(46, 132, 102, 0.12), transparent 60%);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+  }
+
+  /* Subtle paper-grain texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.18 0 0 0 0 0.14 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    z-index: 1;
+  }
+
+  /* Top bar */
+  header {
+    position: relative;
+    z-index: 3;
+    padding: 1.75rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+
+  .brand-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.32em;
+    color: var(--forest);
+    text-transform: uppercase;
+  }
+
+  .meta {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    color: var(--gray);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .meta .dot {
+    color: var(--sage);
+    margin: 0 0.6rem;
+  }
+
+  /* Main hero */
+  main {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 2rem;
+    align-items: center;
+    padding: 0 3rem;
+    min-height: 0;
+  }
+
+  .left {
+    padding-right: 1rem;
+    animation: rise 1.0s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    color: var(--emerald);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .eyebrow::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--emerald);
+  }
+
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(2.75rem, 5.2vw, 4.75rem);
+    line-height: 1.02;
+    color: var(--forest-deep);
+    letter-spacing: -0.025em;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--emerald);
+  }
+
+  .lede {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--gray);
+    max-width: 28rem;
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+  }
+
+  .lede strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    animation: rise 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s both;
+  }
+
+  .btn {
+    --bg: var(--forest);
+    --fg: var(--cream);
+    --bd: var(--forest);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.95rem 1.5rem;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--bd);
+    border-radius: 999px;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 0.25s ease,
+                background 0.25s ease,
+                color 0.25s ease;
+    box-shadow: 0 1px 0 rgba(23, 62, 51, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -10px rgba(23, 62, 51, 0.45);
+  }
+
+  .btn-secondary {
+    --bg: transparent;
+    --fg: var(--forest-deep);
+    --bd: rgba(31, 91, 74, 0.25);
+  }
+
+  .btn-secondary:hover {
+    --bg: var(--forest);
+    --fg: var(--cream);
+    --bd: var(--forest);
+  }
+
+  .btn .arrow {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem;
+    line-height: 1;
+  }
+
+  .btn:hover .arrow {
+    transform: translateX(4px);
+  }
+
+  .btn-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* Right side — logo display */
+  .right {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  .logo-stage {
+    position: relative;
+    width: min(90%, 520px);
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-stage::before,
+  .logo-stage::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+    pointer-events: none;
+  }
+
+  .logo-stage::before {
+    inset: -8%;
+    border-color: rgba(46, 132, 102, 0.18);
+    animation: rotate 60s linear infinite;
+  }
+
+  .logo-stage::after {
+    inset: 4%;
+    border-color: rgba(127, 179, 160, 0.22);
+    animation: rotate 90s linear infinite reverse;
+  }
+
+  .logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 30px 60px rgba(23, 62, 51, 0.18))
+            drop-shadow(0 10px 20px rgba(23, 62, 51, 0.08));
+    animation: float 6s ease-in-out infinite, fade-in 1.2s ease-out 0.2s both;
+  }
+
+  /* Tick marks around the logo */
+  .tick {
+    position: absolute;
+    width: 1px;
+    height: 8px;
+    background: var(--sage);
+    opacity: 0.5;
+    top: 50%;
+    left: 50%;
+    transform-origin: center 240px;
+  }
+
+  /* Footer */
+  footer {
+    position: relative;
+    z-index: 3;
+    padding: 1.25rem 3rem 1.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-shrink: 0;
+    border-top: 1px solid rgba(31, 91, 74, 0.1);
+    margin: 0 3rem;
+    animation: rise 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s both;
+  }
+
+  .team {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  .team-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.28em;
+    color: var(--emerald);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+
+  .team-names {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .footer-right {
+    text-align: right;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--forest);
+  }
+
+  .footer-right .small {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 0.2rem;
+  }
+
+  /* Animations */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* Responsive */
+  @media (max-width: 960px) {
+    html, body { overflow: auto; }
+    main {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding: 1rem 1.5rem;
+    }
+    .right { order: -1; }
+    .logo-stage { width: 60%; max-width: 280px; }
+    header, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    footer { margin: 0 1.5rem; flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .footer-right { text-align: left; }
+    h1 { font-size: clamp(2.25rem, 8vw, 3.5rem); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img class="brand-mark" src="logo.png" alt="">
+    <span class="brand-name">Vortex</span>
+  </div>
+  <div class="meta">
+    BMCC <span class="dot">·</span> AI Innovation Challenge <span class="dot">·</span> Spring 2026
+  </div>
+</header>
+
+<main>
+  <div class="left">
+    <div class="eyebrow">Track 2 · AI Software</div>
+    <h1>An <em>AI advisor</em> for every CUNY student.</h1>
+    <p class="lede">
+      Vortex is a browser extension that reads your DegreeWorks audit
+      and answers like an advisor who actually knows your record —
+      <strong>your courses, your GPA, your transfer path.</strong>
+    </p>
+
+    <div class="actions">
+      <a class="btn" href="https://docs.google.com/presentation/d/1lsbVdjyM_n1wnhL_O7JCNKSkL_RyO7GyDKmacaVQX1M/edit?usp=sharing" target="_blank" rel="noopener">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="14" rx="1.5"/>
+          <path d="M7 9h10M7 13h6"/>
+        </svg>
+        View the Slides
+        <span class="arrow">→</span>
+      </a>
+      <a class="btn btn-secondary" href="https://github.com/KL0-6/Vortex-CunyAI" target="_blank" rel="noopener">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1-.02-1.96-3.2.69-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18.92-.26 1.91-.39 2.89-.39.98 0 1.97.13 2.89.39 2.21-1.49 3.18-1.18 3.18-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13 0 1.54-.01 2.78-.01 3.16 0 .31.21.67.8.56C20.21 21.39 23.5 17.07 23.5 12c0-6.35-5.15-11.5-11.5-11.5z"/>
+        </svg>
+        GitHub Repo
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="logo-stage">
+      <img class="logo" src="logo.png" alt="Vortex">
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="team">
+    <span class="team-label">Team Vortex</span>
+    <span class="team-names">KM Labib · Victor Carrion · Mamadou Bah · Abdullah Al Nayem</span>
+  </div>
+  <div class="footer-right">
+    Built by students, for students.
+    <span class="small">Borough of Manhattan Community College</span>
+  </div>
+</footer>
+
+</body>
+</html>
