@@ -28,6 +28,7 @@
     return response;
   };
 
+  
   // -- Intercept XHR (fallback)
   const _open = XMLHttpRequest.prototype.open;
   XMLHttpRequest.prototype.open = function (method, url, ...rest) {

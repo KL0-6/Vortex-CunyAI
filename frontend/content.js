@@ -3,32 +3,32 @@
 // No brittle DOM scraping — we parse the real API JSON directly.
   const CUNY_COLLEGES = {
   // Senior colleges
-  'baruch':    { name: 'Baruch College',                         code: 'BAR' },
-  'brooklyn':  { name: 'Brooklyn College',                       code: 'BKL' },
-  'ccny':      { name: 'City College of New York',               code: 'CCN' },
-  'citytech':  { name: 'NYC College of Technology',              code: 'NYT' },
-  'csi':       { name: 'College of Staten Island',               code: 'CSI' },
-  'hunter':    { name: 'Hunter College',                         code: 'HUN' },
-  'jjay':      { name: 'John Jay College of Criminal Justice',   code: 'JJC' },
-  'lehman':    { name: 'Lehman College',                         code: 'LEH' },
-  'medgarevers': { name: 'Medgar Evers College',                 code: 'MEC' },
-  'qc':        { name: 'Queens College',                         code: 'QNS' },
-  'york':      { name: 'York College',                           code: 'YRK' },
-  'sps':       { name: 'CUNY School of Professional Studies',    code: 'SPS' },
-  'slu':       { name: 'CUNY School of Labor and Urban Studies', code: 'SLU' },
-  'sph':       { name: 'CUNY Graduate School of Public Health',  code: 'SPH' },
-  'gc':        { name: 'CUNY Graduate Center',                   code: 'GRD' },
-  'law':       { name: 'CUNY School of Law',                     code: 'LAW' },
-  'journalism':{ name: 'Craig Newmark Graduate School of Journalism', code: 'JOU' },
+  'baruch':    { name: 'Baruch College',                         code: 'BAR', transferCode: 'BAR01' },
+  'brooklyn':  { name: 'Brooklyn College',                       code: 'BKL', transferCode: 'BKL01' },
+  'ccny':      { name: 'City College of New York',               code: 'CCN', transferCode: 'CTY01' },
+  'citytech':  { name: 'NYC College of Technology',              code: 'NYT', transferCode: 'NYT01' },
+  'csi':       { name: 'College of Staten Island',               code: 'CSI', transferCode: 'CSI01' },
+  'hunter':    { name: 'Hunter College',                         code: 'HUN', transferCode: 'HUN01' },
+  'jjay':      { name: 'John Jay College of Criminal Justice',   code: 'JJC', transferCode: 'JJC01' },
+  'lehman':    { name: 'Lehman College',                         code: 'LEH', transferCode: 'LEH01' },
+  'medgarevers': { name: 'Medgar Evers College',                 code: 'MEC', transferCode: 'MEC01' },
+  'qc':        { name: 'Queens College',                         code: 'QNS', transferCode: 'QNS01' },
+  'york':      { name: 'York College',                           code: 'YRK', transferCode: 'YRK01' },
+  'sps':       { name: 'CUNY School of Professional Studies',    code: 'SPS', transferCode: 'SPS01' },
+  'slu':       { name: 'CUNY School of Labor and Urban Studies', code: 'SLU', transferCode: 'SLU01' },
+  'sph':       { name: 'CUNY Graduate School of Public Health',  code: 'SPH', transferCode: 'SPH01' },
+  'gc':        { name: 'CUNY Graduate Center',                   code: 'GRD', transferCode: 'GRD01' },
+  'law':       { name: 'CUNY School of Law',                     code: 'LAW', transferCode: 'LAW01' },
+  'journalism':{ name: 'Craig Newmark Graduate School of Journalism', code: 'JOU', transferCode: 'JOU01' },
 
   // Community colleges
-  'bmcc':      { name: 'Borough of Manhattan Community College', code: 'BMC' },
-  'bcc':       { name: 'Bronx Community College',                code: 'BCC' },
-  'hostos':    { name: 'Hostos Community College',               code: 'HOS' },
-  'kbcc':      { name: 'Kingsborough Community College',         code: 'KCC' },
-  'laguardia': { name: 'LaGuardia Community College',            code: 'LAG' },
-  'qcc':       { name: 'Queensborough Community College',        code: 'QCC' },
-  'guttman':   { name: 'Guttman Community College',              code: 'GUT' }
+  'bmcc':      { name: 'Borough of Manhattan Community College', code: 'BMC', transferCode: 'BMC01' },
+  'bcc':       { name: 'Bronx Community College',                code: 'BCC', transferCode: 'BCC01' },
+  'hostos':    { name: 'Hostos Community College',               code: 'HOS', transferCode: 'HOS01' },
+  'kbcc':      { name: 'Kingsborough Community College',         code: 'KCC', transferCode: 'KCC01' },
+  'laguardia': { name: 'LaGuardia Community College',            code: 'LAG', transferCode: 'LAG01' },
+  'qcc':       { name: 'Queensborough Community College',        code: 'QCC', transferCode: 'QCC01' },
+  'guttman':   { name: 'Guttman Community College',              code: 'GUT', transferCode: 'GUT01' }
 };
 
 // Distinctive course prefixes by college (curated, not exhaustive)
@@ -71,6 +71,68 @@ const DISTINCTIVE_PREFIXES = {
   interceptor.onload = () => interceptor.remove();
   (document.head || document.documentElement).prepend(interceptor);
 
+  // DegreeWorks discipline codes → CUNY Transfer Explorer subject codes
+  // Full 4-letter Transfer Explorer codes map to themselves.
+  // Short/variant DegreeWorks codes (3-letter or college-specific) map to the canonical Transfer Explorer code.
+  const DISCIPLINE_TO_SUBJECT = {
+    // ── Transfer Explorer canonical codes (self-mapping) ──────────────────
+    'ASAP':'ASAP','ACCT':'ACCT','ACLS':'ACLS','AFST':'AFST','ASLG':'ASLG',
+    'ANMG':'ANMG','ANTH':'ANTH','ARAB':'ARAB','ARTX':'ARTX','ASAM':'ASAM',
+    'ASTR':'ASTR','BIOL':'BIOL','BIOT':'BIOT','BUSI':'BUSI','BUMA':'BUMA',
+    'BUSE':'BUSE','CHEM':'CHEM','CHIN':'CHIN','CJST':'CJST','CMIS':'CMIS',
+    'CMSC':'CMSC','CODI':'CODI','COMM':'COMM','CTTN':'CTTN','DESK':'DESK',
+    'ECON':'ECON','EDBL':'EDBL','EDCO':'EDCO','EDCS':'EDCS','EDEC':'EDEC',
+    'EDHE':'EDHE','EDSE':'EDSE','EDUC':'EDUC','ELRN':'ELRN','ENGL':'ENGL',
+    'ENSC':'ENSC','ENSL':'ENSL','ETHN':'ETHN','EVSC':'EVSC','FINA':'FINA',
+    'FREN':'FREN','FROR':'FROR','GEIS':'GEIS','GEOG':'GEOG','GEOL':'GEOL',
+    'GLST':'GLST','HEAL':'HEAL','HEST':'HEST','HIST':'HIST','HUSE':'HUSE',
+    'ITAL':'ITAL','LAST':'LAST','LECO':'LECO','LING':'LING','MARK':'MARK',
+    'MATC':'MATC','MATH':'MATH','MDTC':'MDTC','MMDE':'MMDE','MUSI':'MUSI',
+    'NURS':'NURS','OFAT':'OFAT','PARA':'PARA','PERM':'PERM','PHIL':'PHIL',
+    'PHYS':'PHYS','PORT':'PORT','POSC':'POSC','PSYC':'PSYC','PUNA':'PUNA',
+    'PWKF':'PWKF','RETH':'RETH','SCIE':'SCIE','SOCI':'SOCI','SOSC':'SOSC',
+    'SPAN':'SPAN','SPEE':'SPEE','STAB':'STAB','THEA':'THEA','TRAS':'TRAS',
+    'TRTO':'TRTO','UBST':'UBST','VATC':'VATC','WGST':'WGST','WOFL':'WOFL',
+
+    // ── Short/variant DegreeWorks codes → Transfer Explorer equivalents ───
+    'ACC': 'ACCT',   // Accounting (BMCC, LaGuardia, Hostos, etc.)
+    'ANT': 'ANTH',   // Anthropology
+    'ARA': 'ARAB',   // Arabic
+    'ART': 'ARTX',   // Art
+    'AST': 'ASTR',   // Astronomy
+    'BIO': 'BIOL',   // Biology
+    'BUS': 'BUSI',   // Business
+    'CHE': 'CHEM',   // Chemistry
+    'CHN': 'CHIN',   // Chinese
+    'CIS': 'CMIS',   // Computer Info Systems (Baruch, QCC)
+    'CRJ': 'CJST',   // Criminal Justice
+    'CSC': 'CMSC',   // Computer Science (BMCC)
+    'CS':  'CMSC',   // Computer Science (some colleges)
+    'ECO': 'ECON',   // Economics
+    'EDU': 'EDUC',   // Education
+    'ENG': 'ENGL',   // English
+    'ESL': 'ENSL',   // English as Second Language
+    'ETH': 'ETHN',   // Ethnic Studies
+    'FRE': 'FREN',   // French
+    'GEO': 'GEOG',   // Geography (use GEOG; add GEOL entry separately if needed)
+    'HIS': 'HIST',   // History
+    'ITA': 'ITAL',   // Italian
+    'LIN': 'LING',   // Linguistics
+    'MAT': 'MATH',   // Mathematics (BMCC, BCC, Hostos, LaGuardia, Guttman)
+    'MUS': 'MUSI',   // Music
+    'NUR': 'NURS',   // Nursing
+    'PHI': 'PHIL',   // Philosophy
+    'PHY': 'PHYS',   // Physics
+    'POL': 'POSC',   // Political Science
+    'POR': 'PORT',   // Portuguese
+    'PSY': 'PSYC',   // Psychology
+    'SOC': 'SOCI',   // Sociology
+    'SPA': 'SPAN',   // Spanish
+    'SPE': 'SPEE',   // Speech
+    'THE': 'THEA',   // Theatre
+    'WGS': 'WGST',   // Women & Gender Studies
+  };
+
   // ══════════════════════════════════════════════════════════════════════════
   // STEP 2 — Parse the raw DegreeWorks JSON into a clean data model
   // ══════════════════════════════════════════════════════════════════════════
@@ -92,12 +154,14 @@ const DISTINCTIVE_PREFIXES = {
         studentId:    h.studentId,
         studentName:  h.studentName,
         studentEmail: h.studentEmail,
-        college:     college.name,
+        college:           college.name,
+        collegeTransferCode: college.transferCode,
 
         degreeType:  degreeBlock.degree  || h.auditType,
         degreeName:  degreeBlock.title,
-        major:       majorBlock.title,
-        majorCode:   majorBlock.requirementValue,
+        major:        majorBlock.title,
+        majorCode:    majorBlock.requirementValue,
+        majorSubject: this._majorSubject(majorBlock),
         catalogYear: degreeBlock.catalogYear,
 
         gpa: parseFloat(h.studentSystemGpa || h.degreeworksGpa || 0),
@@ -241,6 +305,19 @@ _extractCollegeFromAdviceJump(audit) {
       };
     },
 
+    _majorSubject(block) {
+      for (const rule of block.ruleArray || []) {
+        const subrules = rule.ruleType === "Subset" ? (rule.ruleArray || []) : [rule];
+        for (const req of subrules) {
+          if (req.ruleType !== "Course") continue;
+          const applied = req.classesAppliedToRule?.classArray || [];
+          const disc = applied[0]?.discipline || (req.advice?.courseArray || [])[0]?.discipline;
+          if (disc) return DISCIPLINE_TO_SUBJECT[disc] ?? null;
+        }
+      }
+      return null;
+    },
+
     _parseMajor(block) {
       if (!block.ruleArray) return null;
       const requirements = [];
@@ -357,13 +434,32 @@ _extractCollegeFromAdviceJump(audit) {
   // ══════════════════════════════════════════════════════════════════════════
   // STEP 3 — Chat panel UI
   // ══════════════════════════════════════════════════════════════════════════
+  function parseTransferRule(row) {
+    const extractSpans = (html) => {
+      const out = [];
+      const re = /<span[^>]*title="([^"]*)"[^>]*>([^<]*)<\/span>/g;
+      let m;
+      while ((m = re.exec(html)) !== null) out.push({ title: m[1], code: m[2].trim() });
+      return out;
+    };
+    const sending   = extractSpans(row.td2 || '');
+    const receiving = extractSpans(row.td4 || '');
+    return {
+      sendingCodes:    sending.map(s => s.code),
+      sendingTitles:   sending.map(s => s.title),
+      receivingCodes:  receiving.map(r => r.code),
+      receivingTitles: receiving.map(r => r.title),
+      isCombination:   sending.length > 1,
+    };
+  }
+
   const advisor = {
-    auditData:    null,
-    context:      "",
-    messages:     [],
-    isLoading:    false,
-    dataLoaded:   false,
-    targetSchool: null,   // { key, name, code } when transfer mode is active
+    auditData:   null,
+    cunyRules:   null,
+    context:     "",
+    messages:    [],
+    isLoading:   false,
+    dataLoaded:  false,
 
     init() {
       this.injectHTML();
@@ -415,39 +511,6 @@ _extractCollegeFromAdviceJump(audit) {
             </div>
           </div>
 
-          <div class="cuny-transfer-bar">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-            <span>Transfer to:</span>
-            <select id="transfer-select">
-              <option value="">— degree planner —</option>
-              <optgroup label="Senior Colleges">
-                <option value="baruch">Baruch College</option>
-                <option value="brooklyn">Brooklyn College</option>
-                <option value="ccny">City College (CCNY)</option>
-                <option value="citytech">NYC College of Technology</option>
-                <option value="csi">College of Staten Island</option>
-                <option value="hunter">Hunter College</option>
-                <option value="jjay">John Jay College</option>
-                <option value="lehman">Lehman College</option>
-                <option value="medgarevers">Medgar Evers College</option>
-                <option value="qc">Queens College</option>
-                <option value="york">York College</option>
-                <option value="sps">CUNY School of Professional Studies</option>
-              </optgroup>
-              <optgroup label="Community Colleges">
-                <option value="bmcc">BMCC</option>
-                <option value="bcc">Bronx Community College</option>
-                <option value="hostos">Hostos Community College</option>
-                <option value="kbcc">Kingsborough Community College</option>
-                <option value="laguardia">LaGuardia Community College</option>
-                <option value="qcc">Queensborough Community College</option>
-                <option value="guttman">Guttman Community College</option>
-              </optgroup>
-            </select>
-          </div>
-
           <div class="cuny-prog-wrap" id="prog-wrap" style="display:none">
             <div class="cuny-prog-meta">
               <span>Graduation Progress</span>
@@ -474,7 +537,6 @@ _extractCollegeFromAdviceJump(audit) {
             <button class="chip" data-q="What major courses should I take next semester?">Plan next semester</button>
             <button class="chip" data-q="What gen ed requirements do I still need?">Gen Ed gaps</button>
           </div>
-
 
           <div class="cuny-input-wrap">
             <textarea id="cuny-input" rows="1" placeholder="Ask about requirements, courses, graduation…"></textarea>
@@ -539,12 +601,6 @@ _extractCollegeFromAdviceJump(audit) {
           this.send();
         }
       };
-
-      $("transfer-select").onchange = e => {
-        const key = e.target.value;
-        this.targetSchool = key ? { key, ...CUNY_COLLEGES[key] } : null;
-        this._updateTransferUI();
-      };
     },
 
     // ── Called when audit JSON arrives ──────────────────────────────────────
@@ -600,9 +656,8 @@ _extractCollegeFromAdviceJump(audit) {
         `🎓 Major: **${majShort}** — ${d.majorRequirements?.percentComplete ?? 0}% done\n` +
         `⭐ GPA: **${d.gpa.toFixed(3)}**\n` +
         (ipList ? `🔄 Currently taking: ${ipList}\n` : "") +
-        `\nPlanning to transfer? Use the **Transfer to:** dropdown above to get a personalized transfer plan!`
+        `\nWhat would you like to know about your path to graduation?`
       );
-      this._updateChips();
     },
 
     addMsg(role, content) {
@@ -637,117 +692,40 @@ _extractCollegeFromAdviceJump(audit) {
         .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
     },
 
-    // ── Transfer UI helpers ──────────────────────────────────────────────
-    _updateChips() {
-      const chips = document.getElementById("cuny-chips");
-      if (!chips) return;
-      if (this.targetSchool) {
-        const to = this.targetSchool.name;
-        chips.innerHTML = `
-          <button class="chip transfer-chip" data-q="Which of my completed courses will transfer to ${to}?">What transfers?</button>
-          <button class="chip transfer-chip" data-q="Which of my courses likely won't count at ${to} and why?">What won't transfer?</button>
-          <button class="chip transfer-chip" data-q="How many credits will I arrive with at ${to}?">Credits at ${to}</button>
-          <button class="chip transfer-chip" data-q="What courses do I still need to complete after transferring to ${to}?">Still needed at ${to}</button>
-        `;
-      } else {
-        chips.innerHTML = `
-          <button class="chip" data-q="What courses do I still need to complete my degree?">Remaining requirements</button>
-          <button class="chip" data-q="Am I on track to graduate on time?">Am I on track?</button>
-          <button class="chip" data-q="What major courses should I take next semester?">Plan next semester</button>
-          <button class="chip" data-q="What gen ed requirements do I still need?">Gen Ed gaps</button>
-        `;
-      }
-    },
+    _transferContext() {
+      if (!this.cunyRules?.length || !this.auditData) return '';
+      const completed   = new Map((this.auditData.completedCourses  || []).map(c => [c.code, c]));
+      const inProgress  = new Map((this.auditData.inProgressCourses || []).map(c => [c.code, c]));
+      const known       = new Set([...completed.keys(), ...inProgress.keys()]);
 
-    _updateTransferUI() {
-      const d = this.auditData;
-      const sub = document.getElementById("cuny-sub");
-
-      if (this.targetSchool) {
-        const from = d?.college || "your college";
-        const to   = this.targetSchool.name;
-
-        if (sub) {
-          const last = (d?.studentName || "").split(",")[0];
-          sub.textContent = last ? `${last} · ${from} → ${to}` : `${from} → ${to}`;
-        }
-
-        this._updateChips();
-        this.messages = [];
-
-        if (d) {
-          const ge     = d.genEdRequirements;
-          const credits = d.credits.applied + d.credits.inProgress;
-          this.addMsg("assistant",
-            `🎓 **Transfer Planner: ${from} → ${to}**\n\n` +
-            `Here's a quick snapshot of your transfer position:\n\n` +
-            `📚 **${credits} credits** completed/in-progress (senior colleges accept up to 60 from community college)\n` +
-            `🗺 **Pathways Gen Ed:** ${ge?.percentComplete ?? 0}% complete — these all transfer guaranteed\n` +
-            `📋 **Major progress:** ${d.majorRequirements?.percentComplete ?? 0}% — may count toward ${to}'s requirements (varies by major)\n\n` +
-            `Ask me what transfers, what you'll still need at ${to}, or how to plan your remaining semesters. ` +
-            `For exact course equivalencies, use **explorer.cuny.edu**.`
-          );
+      const single = [], combo = [];
+      for (const row of this.cunyRules) {
+        const rule = parseTransferRule(row);
+        if (rule.isCombination) {
+          if (rule.sendingCodes.some(c => known.has(c))) combo.push(rule);
         } else {
-          this.addMsg("assistant",
-            `🎓 **Transfer Planner → ${to}**\n\n` +
-            `Load your DegreeWorks audit and I'll give you a personalized transfer breakdown — ` +
-            `which courses transfer, how many credits you'll arrive with, and what you'll still need at ${to}.\n\n` +
-            `In the meantime, ask me any general CUNY transfer questions!`
-          );
+          const code = rule.sendingCodes[0];
+          if (known.has(code)) single.push({ rule, course: completed.get(code) || inProgress.get(code) });
         }
-      } else {
-        // Back to degree planner mode
-        if (sub && d) {
-          const last = (d.studentName || "").split(",")[0];
-          sub.textContent = `${last} · ${d.college}`;
-        }
-        this._updateChips();
-        if (d) this._refreshUI();
       }
-    },
+      if (!single.length && !combo.length) return '';
 
-    _buildRegularSystemPrompt() {
-      const college = this.auditData?.college || "CUNY";
-      return `You are a knowledgeable, warm academic advisor for CUNY students at ${college}. You have the student's complete DegreeWorks audit data below. Use it to give precise, specific, actionable advice.
-
-${this.context}
-
-Advisor guidelines:
-- Always reference specific course codes, requirement names, and exact credit counts from the audit
-- Be encouraging but realistic about remaining work
-- When suggesting courses, mention any prerequisites you know about
-- Point out courses that satisfy multiple requirements (gen ed + major) when possible
-- If the student asks about something not in the audit data, say so and give general guidance
-- Format lists with bullet points for readability
-- You know CUNY transfer policies, ${college} course offerings, CUNY Pathways requirements, and ASAP/MAP program benefits`;
-    },
-
-    _buildTransferSystemPrompt() {
-      const from = this.auditData?.college || "their current CUNY college";
-      const to   = this.targetSchool.name;
-      return `You are an expert CUNY transfer advisor helping a ${from} student plan their transfer to ${to}.
-
-CUNY TRANSFER POLICIES — use these to give specific, accurate advice:
-• PATHWAYS GUARANTEE: All CUNY-approved Pathways courses transfer to any CUNY 4-year college and satisfy the SAME Pathways category. If the student completed a Pathways course, it transfers — no exceptions.
-• 60-CREDIT CAP: CUNY senior colleges accept up to 60 transfer credits from community colleges (some up to 70). Credits beyond the cap may not count toward graduation requirements at ${to}.
-• AA/AS GUARANTEE: Students who earn an AA or AS degree from a CUNY community college are guaranteed junior standing (60 credits) at any CUNY senior college. Flag this if the student is close to completing their degree.
-• FREE ELECTIVES: Courses without a direct equivalent at ${to} typically transfer as general elective credits — they count toward the 60-credit cap but don't satisfy specific requirements.
-• MAJOR COURSES: Whether community-college major courses count at ${to} is at ${to}'s discretion. Many do (especially intro/100-level courses in STEM, business, liberal arts), but the student must verify with a ${to} advisor.
-• TRANSFER EXPLORER: Exact course-by-course equivalencies are at https://explorer.cuny.edu/ — always recommend this.
-
-THE STUDENT'S COMPLETE DEGREEWORKS AUDIT:
-${this.context}
-
-HOW TO STRUCTURE YOUR TRANSFER ADVICE:
-1. Identify which completed courses are Pathways-approved → label them "DEFINITELY transfers (Pathways)"
-2. Identify non-Pathways completed courses → label them "likely transfers as elective or equivalent — verify at explorer.cuny.edu"
-3. State total transferable credits (sum all completed credits, cap at 60)
-4. List which Pathways categories the student still needs — they'll complete these at ${to}
-5. For major courses: note they may count at ${to} but require verification
-6. If the student has or is close to an AA/AS, highlight the junior standing guarantee
-7. Close with a recommended action plan: what to finish before transferring, what to do at ${to}
-
-Be specific with course codes and credit counts. Be practical and encouraging.`;
+      const lines = ['TRANSFER EQUIVALENCIES (your courses → receiving college):'];
+      for (const { rule, course } of single) {
+        const grade  = course.grade ? ` [${course.grade}]` : ' [in progress]';
+        const recv   = rule.receivingTitles.join(' + ') || rule.receivingCodes.join(' + ');
+        lines.push(`• ${rule.sendingTitles[0] || rule.sendingCodes[0]}${grade}  →  ${recv}`);
+      }
+      if (combo.length) {
+        lines.push('Combination rules (all listed sending courses transfer jointly):');
+        for (const rule of combo) {
+          const recv    = rule.receivingTitles.join(' + ') || rule.receivingCodes.join(' + ');
+          const hasAll  = rule.sendingCodes.every(c => known.has(c));
+          const status  = hasAll ? '[you have all]' : '[partial — need: ' + rule.sendingCodes.filter(c => !known.has(c)).join(', ') + ']';
+          lines.push(`• ${rule.sendingCodes.join(' + ')}  →  ${recv}  ${status}`);
+        }
+      }
+      return lines.join('\n');
     },
 
     // ── Send message to Claude ───────────────────────────────────────────
@@ -764,17 +742,24 @@ Be specific with course codes and credit counts. Be practical and encouraging.`;
 
       const { apiKey } = await chrome.runtime.sendMessage({ type: "GET_API_KEY" });
 
-      const college = this.auditData?.college || "CUNY";
-      let systemPrompt;
-      if (this.dataLoaded) {
-        systemPrompt = this.targetSchool
-          ? this._buildTransferSystemPrompt()
-          : this._buildRegularSystemPrompt();
-      } else if (this.targetSchool) {
-        systemPrompt = `You are an expert CUNY transfer advisor. The student wants to transfer to ${this.targetSchool.name} but their DegreeWorks audit hasn't loaded yet. Answer general CUNY transfer questions about ${this.targetSchool.name}. Once their audit loads you'll be able to give personalized advice.`;
-      } else {
-        systemPrompt = `You are a helpful CUNY academic advisor at ${college}. The student's DegreeWorks audit hasn't loaded yet. Answer general CUNY advising questions and let them know that once the audit loads you'll be able to give much more specific advice.`;
-      }
+      const transferCtx = this._transferContext();
+      const systemPrompt = this.dataLoaded
+        ? `You are a knowledgeable, warm academic advisor for CUNY students at ${this.college}. You have the student's complete DegreeWorks audit data below. Use it to give precise, specific, actionable advice.
+
+${this.context}
+${transferCtx ? '\n' + transferCtx : ''}
+
+Advisor guidelines:
+- Always reference specific course codes, requirement names, and exact credit counts from the audit
+- Be encouraging but realistic about remaining work
+- When suggesting courses, mention any prerequisites you know about
+- Point out courses that satisfy multiple requirements (gen ed + major) when possible
+- If the student asks about something not in the audit data, say so and give general guidance
+- Format lists with bullet points for readability
+- You know CUNY transfer policies, ${this.college} course offerings, CUNY Pathways requirements, and ASAP/MAP program benefits`
+
+        : `You are a helpful CUNY academic advisor at ${this.college}. The student's DegreeWorks audit hasn't loaded yet in the browser. 
+Answer general CUNY/${this.college} advising questions as best you can. Let them know that once their audit loads you'll be able to give much more specific advice based on their actual record.`;
 
       // Build conversation history (exclude the system-level welcome if data not loaded)
       const history = this.messages
@@ -817,7 +802,32 @@ Be specific with course codes and credit counts. Be practical and encouraging.`;
   // ══════════════════════════════════════════════════════════════════════════
   window.addEventListener("message", e => {
     if (e.source === window && e.data?.__cunyAdvisor) {
+      console.log("[CUNY Advisor] Audit message received, fetching CUNY rules...");
       advisor.updateAuditData(e.data.payload);
+      const d = advisor.auditData;
+      const allCourses = [...(d?.completedCourses || []), ...(d?.inProgressCourses || [])];
+      console.log("[CUNY Advisor] Extracted courses from audit:", allCourses.map(c => c.code));
+      const subjects = [...new Set(
+        allCourses
+          .map(c => DISCIPLINE_TO_SUBJECT[c.code.split(' ')[0]])
+          .filter(Boolean)
+      )];
+      console.log("[CUNY Advisor] Mapped subjects for CUNY rules fetch:", subjects);
+      chrome.runtime.sendMessage({
+        type: "FETCH_CUNY_RULES",
+        payload: {
+          sendingcollege: d?.collegeTransferCode,
+          subjects: subjects.length ? subjects : undefined,
+        }
+      }, response => {
+        console.log("[CUNY Advisor] FETCH_CUNY_RULES response:", response);
+        if (response?.data) {
+          console.log("[CUNY Advisor] CUNY rules loaded:", response);
+          advisor.cunyRules = response.data;
+        } else if (response?.error) {
+          console.warn("[CUNY Advisor] Failed to fetch CUNY rules:", response.error);
+        }
+      });
     }
   });
 
