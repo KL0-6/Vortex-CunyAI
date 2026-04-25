@@ -12,7 +12,7 @@
     ] ,
   "web_accessible_resources": [
     {
-      "resources": ["injected.js", "panel.css"],
+      "resources": ["injected.js", "panel.css", "cory-logo.svg"],
       "matches": ["https://*.cuny.edu/*"]
     }
   ],

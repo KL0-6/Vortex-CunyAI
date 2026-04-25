@@ -3,151 +3,315 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CUNY Advisor Settings</title>
+  <title>Cory Settings</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ==========================================================================
+       DESIGN TOKENS (from Cory Chatbox)
+       ========================================================================== */
+    :root {
+      --cory-green-900: #0f3d2e;
+      --cory-green-700: #1b5e47;
+      --cory-green-500: #2d8a6b;
+      --cory-green-300: #b8dcc9;
+      --cory-green-100: #e8f3ed;
+
+      --cory-text-primary: #1a1a1a;
+      --cory-text-secondary: #4a4a4a;
+      --cory-text-muted: #6b6b6b;
+      --cory-text-on-green: #0f3d2e;
+
+      --cory-border-soft: rgba(0, 0, 0, 0.06);
+      
+      --cory-radius-card: 28px;
+      --cory-radius-bubble: 16px;
+      --cory-radius-input: 999px;
+
+      --cory-shadow-card: 0 20px 60px -10px rgba(0, 0, 0, 0.25),
+                          0 4px 16px -4px rgba(0, 0, 0, 0.1);
+
+      --cory-font-display: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+      --cory-font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+      --cory-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ==========================================================================
+       RESET / BASE
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
 
     body {
-      width: 320px;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #f8faff;
-      color: #1a1a2e;
+      margin: 0;
+      padding: 0;
+      width: 420px;
+      font-family: var(--cory-font-body);
+      color: var(--cory-text-primary);
+      background: #fff;
     }
 
-    .header {
-      background: #003366;
-      color: white;
-      padding: 18px 20px 14px;
+    /* ==========================================================================
+       POPUP CARD
+       ========================================================================== */
+    .cory-popup {
+      width: 100%;
+      background: #fff;
+      border-radius: var(--cory-radius-card);
+      box-shadow: var(--cory-shadow-card);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    .header h1 {
-      font-size: 16px;
+    /* ==========================================================================
+       HEADER
+       ========================================================================== */
+    .cory-popup-header {
+      padding: 18px 22px;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      align-items: center;
+      gap: 14px;
+      background: linear-gradient(135deg, var(--cory-green-700), var(--cory-green-900));
+      border-radius: var(--cory-radius-card) var(--cory-radius-card) 18px 18px;
+      margin: 8px 8px 0;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .cory-popup-logo {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .cory-popup-title-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .cory-popup-title {
+      font-family: var(--cory-font-display);
       font-weight: 700;
-      letter-spacing: -0.2px;
+      font-size: 20px;
+      color: #fff;
+      margin: 0;
+      line-height: 1;
     }
 
-    .header p {
-      font-size: 11.5px;
-      opacity: 0.7;
-      margin-top: 2px;
-    }
-
-    .badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 20px;
-      padding: 2px 8px;
-      font-size: 10px;
-      font-weight: 600;
-      margin-top: 8px;
-      letter-spacing: 0.3px;
-    }
-
-    .content {
-      padding: 20px;
-    }
-
-    .field-label {
+    .cory-popup-subtitle {
       font-size: 12px;
+      color: rgba(255, 255, 255, 0.8);
+      margin: 0;
+    }
+
+    /* ==========================================================================
+       CONTENT
+       ========================================================================== */
+    .cory-popup-content {
+      padding: 22px 22px;
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cory-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cory-field-label {
+      font-size: 13px;
       font-weight: 600;
-      color: #445;
-      margin-bottom: 6px;
+      color: var(--cory-text-on-green);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .field-label a {
-      color: #003366;
+    .cory-field-label a {
+      color: var(--cory-green-700);
       font-weight: 500;
       text-decoration: none;
       font-size: 11px;
+      transition: opacity 0.2s;
     }
 
-    .field-label a:hover { text-decoration: underline; }
+    .cory-field-label a:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
 
-    .input-wrapper {
+    .cory-input-wrapper {
       position: relative;
+      display: flex;
+      align-items: center;
     }
 
-    input[type="password"], input[type="text"] {
+    input[type="password"],
+    input[type="text"] {
       width: 100%;
-      padding: 9px 38px 9px 12px;
-      border: 1.5px solid #dde3ef;
-      border-radius: 9px;
-      font-size: 13px;
-      background: white;
-      color: #1a1a2e;
+      padding: 12px 38px 12px 16px;
+      background: #fff;
+      border: 1.5px solid var(--cory-border-soft);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: var(--cory-font-body);
+      color: var(--cory-text-primary);
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.2s var(--cory-ease), 
+                  box-shadow 0.2s var(--cory-ease);
     }
 
-    input:focus { border-color: #003366; }
+    input:focus {
+      border-color: var(--cory-green-500);
+      box-shadow: 0 0 0 3px rgba(45, 138, 107, 0.15);
+    }
 
-    .toggle-visibility {
+    .cory-toggle-visibility {
       position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
+      right: 12px;
       background: none;
       border: none;
       cursor: pointer;
-      color: #889;
-      padding: 2px;
+      color: var(--cory-text-muted);
+      padding: 4px;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: all 0.2s var(--cory-ease);
     }
 
-    .toggle-visibility:hover { color: #003366; }
+    .cory-toggle-visibility:hover {
+      color: var(--cory-green-700);
+      background: rgba(45, 138, 107, 0.1);
+    }
 
-    .save-btn {
+    .cory-save-btn {
       width: 100%;
-      margin-top: 14px;
-      padding: 10px;
-      background: #003366;
-      color: white;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--cory-green-700), var(--cory-green-500));
+      color: #fff;
       border: none;
-      border-radius: 9px;
-      font-size: 13px;
+      border-radius: 12px;
+      font-size: 14px;
       font-weight: 600;
+      font-family: var(--cory-font-body);
       cursor: pointer;
-      transition: background 0.15s;
+      transition: all 0.2s var(--cory-ease);
+      box-shadow: 0 2px 8px rgba(45, 138, 107, 0.2);
     }
 
-    .save-btn:hover { background: #004499; }
+    .cory-save-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(45, 138, 107, 0.3);
+    }
 
-    .status {
-      margin-top: 10px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 12px;
+    .cory-save-btn:active {
+      transform: translateY(0);
+    }
+
+    .cory-status {
+      margin: 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
       font-weight: 500;
       display: none;
+      animation: slideIn 0.2s var(--cory-ease);
     }
 
-    .status.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-    .status.error { background: #fce4e4; color: #c62828; border: 1px solid #ffcdd2; }
-    .status.show { display: block; }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-    .divider { border: none; border-top: 1px solid #eef0f5; margin: 18px 0 14px; }
+    .cory-status.success {
+      background: var(--cory-green-100);
+      color: var(--cory-text-on-green);
+      border: 1px solid var(--cory-green-300);
+    }
 
-    .info-section { font-size: 12px; color: #556; }
-    .info-section h3 { font-size: 12px; font-weight: 700; color: #334; margin-bottom: 8px; }
+    .cory-status.error {
+      background: #fce4e4;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
 
-    .step {
+    .cory-status.show {
+      display: block;
+    }
+
+    .cory-key-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--cory-green-100);
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--cory-text-on-green);
+      border: 1px solid var(--cory-green-300);
+    }
+
+    .cory-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ccc;
+      transition: background 0.2s;
+    }
+
+    .cory-status-dot.active {
+      background: #2e7d32;
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
+
+    .cory-divider {
+      border: none;
+      border-top: 1px solid var(--cory-border-soft);
+      margin: 0;
+    }
+
+    .cory-info-section {
+      font-size: 12px;
+      color: var(--cory-text-secondary);
+    }
+
+    .cory-info-section h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cory-text-on-green);
+      margin: 0 0 10px;
+    }
+
+    .cory-step {
       display: flex;
       gap: 8px;
-      margin-bottom: 7px;
+      margin-bottom: 8px;
       align-items: flex-start;
     }
 
-    .step-num {
-      width: 18px;
-      height: 18px;
-      background: #003366;
-      color: white;
+    .cory-step-num {
+      width: 20px;
+      height: 20px;
+      background: var(--cory-green-500);
+      color: #fff;
       border-radius: 50%;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -156,76 +320,91 @@
       margin-top: 1px;
     }
 
-    .key-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 10px;
-      padding: 7px 10px;
-      background: #f0f4fa;
-      border-radius: 8px;
-      font-size: 11.5px;
-      color: #556;
+    .cory-step span {
+      line-height: 1.5;
     }
 
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #ccc;
+    .cory-step strong {
+      font-weight: 600;
+      color: var(--cory-text-primary);
     }
-
-    .dot.active { background: #4caf50; }
-    .dot.inactive { background: #ccc; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>CUNY Academic Advisor</h1>
-    <p>AI-powered degree planning assistant</p>
-    <div class="badge">⚡ Powered by Claude</div>
-  </div>
+  <!-- SVG LOGO SPRITE -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <symbol id="cory-logo" viewBox="0 0 1249 1249"><path fill="#45957f" stroke="#45957f" d="m612 123 55 1 1 1h9l1 1 19 2 6 2h6v2h-2q-1 3 2 2v1l-4-1 1-2-2-1v2q-3-1-2 2l-5 4-1 4 3 3 1-4 1 2h1l1 3-1 5-1-5-1 6 2 5-3 2v-8l-2-1 1 3-1 3 1 3-2-1-2 6 2 1-1-2 3-2q1 7-1 11l-1-2q2-2 0-3l-1 4-3 1h3v2l-3-2-1 2 1 1-2-1-1 5-27-16-40-20-22-9-20-6-4-2 7-2h11l1-1h16zm94 22v3h-1zm-251 12-1 2-4 2-1-2zm-7 3v2l-11 7 2-3 4-2v-2l2 1v-2l2 1zm251 2q3-1 2 2-3 1-2-2Zm-261 2 1 1-5 2v-1zm262 1 1 3h-1zm-267 5-1 2zm-12 2 1 1-2 1zm9 0-1 2zm-3 2-1 2zm-13 2 1 3 4 1 2-1-16 12q1 2-2 1l-17 16 9-10-1-1v-2l-1 3-8-3 2-4 14-8v2l2-1v-2l1 1 2-3zm-18 10v3l3 1 1-2h-2q1-3-2-2Zm7 0-1 2 2-1zm-8 1-2 2 1 2 2-1zm6 3v2l2-1zm-14 2 2 4q2 1 1-2h-2q1-3-1-2Zm37-16-1 2zm269 2v2l-2 1v-1q2 1 2-2Zm16 11 1 1-1 2q-3-1 0-3Zm3 0 1 5h-2l-1-2zm-208 1 33 1 1 1 15 1 32 6 25 7 25 9 46 22v2q-2-3-4 2l1 2h1q-4 2 0 4l-2 3 1 1q-4-1-2 5l1 5h-1l-1-3q-3-1-2 2h-2v6q-1 3-3 0v-2l-2 4 4 2v4l3 2h-2l-3-1v3l-2-4-1 2-3-1v-3l-1 2q-32-18-69-30l-46-11-33-3v1l27 13 40 26 22 4 35 9 41 14 15 8-1-1q-6-1-7 3l1 3v3l-2-2 1-2q-5-1-3 4l1 1-3 2-1 5 1 1q-5-1-4 2l1 1-4-1q1 3-1 2l-14-5-35-9-25-3q-2 3-3-1h-11l-1-1h-45l-1 1h-11l-3 2q-2-2-6-1l-1 1-24 3-27 7v-1l5-1-4-3-2-5-1 3q-3-1-1-2l1-3-5-3q1-3-1-2l1-2 2 1h1q-2 1 1 2l1-2 1 2v-2l-4-3-4 1q1-3-2-2l-2 1q1-3-2-2v-2l-2-2v2l1 4h-1v-2l-1 2h-3l3-2-1-4-4 2 1 2h-1q1-3-1-2l-2-1-2 1v-6h9l-2-3h-2l6-2 3 1q1 3-2 2l-1 2 7-2 1 4h2q2 1 1-2h2q-1 4 4 2v4h2l1 1-1-4 1-2h-4l4-2 2 1q-1-3 3-2v1l-2 1 1 2q-3-1-2 3l1 1q-3-1-2 2l2-1 3 2v-1l-2-3 2-1 1 1 1-2 1 1-1-3q-3 1-2-3l3-1 1 3 1-2q-3-2-1-3l1-2q2 1 0 3-1 2 2 1l1-2-1-3q4-1 6 1l1-2 2 2 1-2 1 1q1-3-1-2l-7-1 6-1 2 1v-2q1 2 2 0l-4-1 5-1 3 2 3-1h4l-7-1 7-1q-19-11-41-17l2-1 12 4 1-4q-4 1-3-1-1-3-2-1l-4 2-2-4-2 1h-2l-4-1v-2q-2 2-3 0 1-3-2-2v3l-1-3-3-1-2-5-2 1-1-3-3 1q-3 1-2-1h2q-1-3 2-2 3-1 0-3l-4 1q1-3-2-2l-4-6-3-1-2 1 1-2-1-3-2 1v-2h-4v-1l-3 1 2-3-1-3-1 3q-3 1-2-1l1-2-2-4-1 2-1-3q-4 2-3-1h3l1 1v-5l26-7 17-3q1 3 3-1 4-1 6 1v-2l16-1 1-1h17zm-41 5v1h3zm-6 1v1h3zm-5 1v1h2zm-19 25q-2 3 1 2zm3 4 1 2q1-3-1-2Zm238 16v7h1q1-5-1-7Zm-194 16-2 2h2zm187 14v3l2-1q1-3-2-2Zm-185 16-2 5 2 1zm2 1-1 3h2zm-43 2 1 2q1-3-1-2Zm19 0-1 1q-3-1-2 2l3-1q2-1 1 3v1l2-1-1-3zm-4 1-1 4h2zm22 1-1 3h1zm2 0-1 3h1zm3 1 1 2q1-3-1-2Zm-10 5q-2 3 1 2 1 2 2 0zm6 1q-1 3 2 2 1-3-2-2Zm-14 2v2l2-1zm1 6 1 2q1-3-1-2Zm-82-115-1 2-2 1 1-2zm333 2-1 2zm-338 1-1 2zm-8 5-1 2zm-3 2-1 2zm-3 2-1 2zm-3 2-1 2zm-3 2-1 2zm-4 3-1 2zm-3 2-2 3zm-4 3-2 3zm26 2v3l-2 1-1-1zm-30 1-2 3zm-5 4-2 3zm88 1v3h-1zm-92 2-3 4zm98 2q3-1 2 2l-1-1zm-104 3-4 5zm-6 5-2 3zm360 1 2 2-2 1zm-367 5-3 4zm86 1 14 1h-14zm278 0 2 1h-2zm-287 1 6 1h-6zm27 0 6 1h-6zm28 0q2-1 1 2zm-59 1 2 1q-2 3-2-1Zm40 0 3 1h-3zm6 1 7 2h-3l-4-1zm-57 2 1 1-12 6 2-3zm66 0 2 1h-2zm-136 1-4 5zm140 0 15 5h-2l-13-4zm-83 6-1 2zm-3 2-2 3zm-5 4-3 4zm-63 1-1 2zm379 1 1 2zm-323 4-4 5zm326 0q3-1 2 3-3 1-2-3Zm0 6v3h-2zm-191 1 3 1h-3zm-144 1-5 6zm139 0 3 1h-3zm-6 1 2 1h-2zm-5 1 2 1h-2zm-4 1 2 1h-2zm-4 1 2 1h-2zm215 0 1 3-2-1zm-401 3-6 7zm175 0 2 1h-2zm229 0 6 3 1-2 1 3h2v2q4-1 3 2l1 2-13-8zm-242 4 1 1-4 1v-1zm-6 2 1 1h-2l1 2h1v2l-3-1q1-3-1-2l-2 1v-1zm5 1v2h-2zm260 3 1 1v2l-3-1zm-434 4-2 3zm57 1-6 7zm129 3 2 1-2 1zm-2 1 1 3h-1zm8 0 4 6h1q-1 3-3 0zm-200 4-1 2zm436 1-1 2zm-382 3-3 4zm58 7-1 2-2 1 1-2zm-66 2-1 2zm161 1 2 1-5 1v-1zm-10 3 2 1h-2zm-155 1-1 2zm384 0 1 2q-3 1-1-2Zm-4 2q2-1 1 2zm-442 5-1 2zm189 2 1 1-3 1v-1zm284 4 2 1-2 1zm-296 1 1 1-5 2v-1zm292 0q3-1 2 2l1 1-3-1zm-419 1-1 2zm118 3 1 1-2 1zm-121 1-1 2zm39 2-1 2zm233 3 1 1-2 1zm-11 13q1 2-1 1-3 1-2-1zm26 16 2 3 1-2q-1 1-3-1zm94 75v3h-2zm-2 4-2 2h3q1-3-1-2Zm10 9 1 2q1-3-1-2Zm-3 2 1 1 1 1q1-3-2-2Zm16 16q-3 2 0 3l1-2zm3 0-2 3 1 2h2zm268 380-2 2 3 2zm52 48-1 3h2zm3 4v1h3zm9 4-1 2 3 1zm-9 1q-1 3 2 2 1-3-2-2Zm16 1-7 5 1 1 6-4zm-22 1 1 2q1-3-1-2Zm9 1q0 3-2 2l1 2q4-2 1-4Zm-12 1 1 1 1 1q1-3-2-2Zm0 7v2h3l1-1zm10 0v2l2-1zm9 6v4-1q2-2 0-3Zm34 22-1 6h1zm26 12q-3 4 1 3zm-7 1-3 3 1 2 2-1zm9 2q-2 3 1 2zM699 148l-1 2zm-41 14 1 2zm3 2 2 2-1-1zm13 7 5 4-1-1q-4 0-4-3Zm-299 47v3h-2zm138 12q4-1 3 2-4 0-3-2Zm162 3 7 5 1 1h1v1l2-1q67 39 117 95 33 36 57 81l21 48 10 32 3 14q-3 1-1 3 1 2-1 1l-1-3-2 7 4 8v-2l-1-3v-2l1-4 2 4 1-2v4l-1 2q4-1 2 7 2 1 1 6l-1 3h2l-2 11 2 1 1-2v2l-1 5-1-2q-3 1-2-2h-3l2-4 1 1-1-4-3 1 2 1-2 1q1-3-2-2l-2 1q1-4-1-3l1-2 1 2 1-3-2-1q-2 3-4 2 1 2-2 1 1-3-1-2l-2 1v-1q2 1 1-2l1-2-2-1-2 2-2 5 1 1-3 2v1l-1-1 13-28v2l-3 8 1 1h-2l1 3 4-1 2 3v-2q3 1 2-2l-2 1-1-1q2-5 4-2 2-1 1 2l-1 2 2-1q-1-4 2-3l-1-1q1-3-2-2l1-2 3-2-1-1-2 1v-2q1-3-1-2l-2 1 4-9-1-2q2-2 0-3l-3 1-1 4 1 3h-1v-2l-3 7-1-1 4-13 3-5 10-39 2-22 2-4v-12l1-1v-31l-1-1v-8l-2-3v-5l-5-21-7-20-14-28q-4-1-2 5l1 1v15l1 1v47l-1 1v15l-1 1-2 22-3 10-3 20-9 32-2 1 1 1-2 1 1 3q-2-2-4 2v1l-4-1q1-3-1-2l-3 1h-3v-3l-3 1-1-4-3 1-2 1h2q1 3-3 2l-1-4h2l-3-2-3 1 1-2-3-2-2 1q2-2 0-3l-2 1q3-2-1-3v-2l-2 1v-3q-2 2-3 0l-1-4-2 1v-2l-1 5-1-4-3 1v2l-1-7 8-23 3-14 3-6q1-10 4-17v-5l4-12 3-25 2-3-1-3 2-4 1-16 1-1v-12l1-1 1-49-1-1-1-12-8-18q-13-18-29-33-64-59-150-95-3 2 0 3l25 19 38 38 41 49 14 20 14 24 7 27v8l1 1v30l-1 1-1 25-2 8-13-29-15-30-31-49q-36-50-80-92l-11-8q1-3-1-2-40-37-90-64h2l7 4v-6l3 2-1-1 2-3q4 1 2-3l3 1v-9l-2 4v1l-2-3 2-4 2 1-1-3v-4q-1-3 2-2l1 9q3 0 2-4-3-2-2-8h1l1 4 1-5-1-4-2 1v-2l-1 4-3-3 2-5-1-2 2-1-1 2 4-2v-2h2q-1-3 2-2l-1 2 2 2h2l-2-1 1-3 1 1zm-3 15-1 3h1zm-7 17q-1 3 2 2 1-3-2-2Zm-2 8-1 3h1zm-4 3 1 1 1 1q1-3-2-2Zm16 16q-3 2 0 3l1-2zm3 0-2 3 1 2h2zm268 380-2 2 3 2zm52 48-1 3h2zm3 4v1h3zm9 4-1 2 3 1zm-9 1q-1 3 2 2 1-3-2-2Zm16 1-7 5 1 1 6-4zm-22 1 1 2q1-3-1-2Zm9 1q0 3-2 2l1 2q4-2 1-4Zm-12 1 1 1 1 1q1-3-2-2Zm0 7v2h3l1-1zm10 0v2l2-1zm9 6v4-1q2-2 0-3Zm34 22-1 6h1zm26 12q-3 4 1 3zm-7 1-3 3 1 2 2-1zm9 2q-2 3 1 2z"/><path fill="#74bea2" stroke="#74bea2" d="m608 123 3 1h-3zm42 0 7 1h-7zm-58 1 2 1h-2zm76 0 3 1h-3zm-88 1 2 1h-2zm98 0 3 1h-3zm7 1 2 1h-2zm13 2 2 1h-2zm5 1 4 1h-4zm6 1 39 7 47 14 65 30 41 25 31 22q32 25 59 55l35 43 2 5 11 14 14 22 25 46 19 45 14 46 4 22 4 14 2 22 1 1v9l1 1v8l2 7v15l1 1v53l-1 1v14l-1-2-1 6 1 3q-3-1-2 4l-2 3 1 3-1 2-1-5-2 4-3-1-2 1 2-4-2 1-1-3-2-1q-2 3-5 2l-1-3-2 1v-3l-1 5-5-1-2 1 1-4-2-1-2 1q-2-3-3-1l-2 1 2 2q-3-4-8-4l1-5h-1q-3 1-2-3v-2q-1-5 1-6v-65l-2-9 1-5-2-7-2 2-4 23-3 9-2 1 1 3-1 3-1-2-2 3q4 1 1 3v3l-1-3-2 3v-1q1-3-1-2l-2 3v4l-1 5-1-3v-2l-1-3-3 6q3-1 2 2-3 1-1 3l1 2 1-4 2 1-1 5 1 2-1 2q-2-2-3 1l2 1h-3v2l-1-2-5 2-2-3-1 3-1-2v-2l2-3-3-2 1 2-4 1v-4l-1 3-3-3 3-1-1-4-3 1v2l-1 2 1 1-2 1h2v2l-3-1q1-3-2-2l-2 1q1-4-1-3l1-2 1 2 1-3-2-1q-2 3-4 2 1 2-2 1 1-3-1-2l-2 1v-1q2 1 1-2l1-2-2-1-2 2-2 5 1 1-3 2v1l-1-1 13-28v2l-3 8 1 1h-2l1 3 4-1 2 3v-2q3 1 2-2l-2 1-1-1q2-5 4-2 2-1 1 2l-1 2 2-1q-1-4 2-3l-1-1q1-3-2-2l1-2 3-2-1-1-2 1v-2q1-3-1-2l-2 1 4-9-1-2q2-2 0-3l-3 1-1 4 1 3h-1v-2l-3 7-1-1 4-13 3-5 10-39 2-22 2-4v-12l1-1v-31l-1-1v-8l-2-3v-5l-5-21-7-20-14-28q-4-1-2 5l1 1v15l1 1v47l-1 1v15l-1 1-2 22-3 10-3 20-9 32-2 1 1 1-2 1 1 3q-2-2-4 2v1l-4-1q1-3-1-2l-3 1h-3v-3l-3 1-1-4-3 1-2 1h2q1 3-3 2l-1-4h2l-3-2-3 1 1-2-3-2-2 1q2-2 0-3l-2 1q3-2-1-3v-2l-2 1v-3q-2 2-3 0l-1-4-2 1v-2l-1 5-1-4-3 1v2l-1-7 8-23 3-14 3-6q1-10 4-17v-5l4-12 3-25 2-3-1-3 2-4 1-16 1-1v-12l1-1 1-49-1-1-1-12-8-18q-13-18-29-33-64-59-150-95-3 2 0 3l25 19 38 38 41 49 14 20 14 24 7 27v8l1 1v30l-1 1-1 25-2 8-13-29-15-30-31-49q-36-50-80-92l-11-8q1-3-1-2-40-37-90-64h2l7 4v-6l3 2-1-1 2-3q4 1 2-3l3 1v-9l-2 4v1l-2-3 2-4 2 1-1-3v-4q-1-3 2-2l1 9q3 0 2-4-3-2-2-8h1l1 4 1-5-1-4-2 1v-2l-1 4-3-3 2-5-1-2 2-1-1 2 4-2v-2h2q-1-3 2-2l-1 2 2 2h2l-2-1 1-3 1 1zm-3 15-1 3h1zm-7 17q-1 3 2 2 1-3-2-2Zm-2 8-1 3h1zm-4 3 1 1 1 1q1-3-2-2Zm16 16q-3 2 0 3l1-2zm3 0-2 3 1 2h2z"/><path fill="#2b7865" stroke="#2b7865" d="m444 162 2 2-1-1-11 7 1 1-2-1-17 12 1-3-4-1zm-31 18 1 1-2 1zm-9 2-2 3-4 1 1 2h1l-1 2-2-1-3 2v-2l-2 1v-1l3-2 1 2v-3zm-1 4 1 1-2 1zm3 2v3l-2-1-4 3 1-3zm-19 4q2-1 1 2h2q1 3-1 2v1l4 1 1-3 2 4-1-1-24 24 1 1q20-11 45-17l-1 7h1l1-2 3 5h1l1 2-1 2h2v1h4v2h2l3 4 4-1-1 5q1 3 5 2-1 3 2 2l2-1 1 2v2l-3-1 2 3q1-2 2 1l1 1h1l4 5 1 1q-2 1 1 2v-3q3-1 2 2l3 1q-1 2 2 1l2 1h2l2-1 2 4 4-2v-2l2 4q4 2 3-1h1l-3 4 3 1q-1 2 2 1v1l-2 1v-2l-19-6-2 1v-1h1l-2-1-2 1v-1h1l-19-6h-5l-2 1v-1h1l-4-1-4 1v2l-4-1-15 6 1 1-2-1v2q-2-2-3 1l-5 3 1 1-1-1-3 3q-25 19-46 43l-9 12-5 4-1 3-3 2-26 35q-2-2-3 1h-2q2 4-1 3l-1-3h-2v4h-1q1-2-2-4l-3-1 1 2 1 1h-3l-2 3h-1l1-2-4-1v-2l-2 3-3-4 1-2h-3l1-3q-3 1-2-1l1-4q-3-1-2 3h-1l-1-2v-2l-1-6-2 1 1-2-3-1 1-3v2q3 1 2-1-2-4-4-2l13-19q3 1 2-1 27-32 57-61l3-2q36-35 81-62v2q3 1 2-1zm27 16-1 2q4 1 3-1zm6 8q-2 3 1 2zm7 9-1 3h1zm6 4 1 1 1 1q1-3-2-2Zm9 9q-2 3 1 2zm6 7 1 2q1-3-1-2ZM237 347v3h1q1-4-1-3Zm4 5 1 5q-1 2 2 1l1 2v-1l1-3-1-1-2 1 1-3zm220-157-1 2h-4zm2 0 3 1h-3zm-11 2 2 1h-2zm-20 24 2 3q-3 1-2-1zm100 11 3 1h-3zm8 1 4 1h-4zm-135 12 10 1h-10zm91 29 9 1-5 1h-2zm-7 1 5 1-4 3h2v2h-2v1l-3-1v1q-2-2-6-1l1 3-1 1 1 2v7h2v2l-4-2v2l-1-2q3-2 2-6l-2-1-1 2 1 1-2-4-3 1q-1 4 2 3l2 6h-1l-1-4-1 2 1 1-3-2v2l1 3-2-2-2 1-1-2h2l-1-4q3 1 2-1v-2h1l-3-1v2q-3-1-2 2l-1 2 1 3-1-1h-2v-4h-3v2l1 3-2 1v-1q1-4-1-3v2l-3-1q-1-3 2-2v-1l-2-1-2 1q2-5-2-4-1 3-5 2l1-2q3 1 2-2l-4 1v-1l25-7 11-1zm-4 2v1h5zm-6 5-1 2q-2 1 1 2v-1q2-2 0-3Zm-13 6q0 4 2 1zm-7 1q-1 3 2 2 1-3-2-2Zm-17-3q4 0 4 3h-9q-1 4 2 5l3 1 4-2 3 6v-2l-2-3 2-1 1 4q3-1 2 2l2-1q3-1 2 2l4-1 4 3v2l-1-2-1 2-4-3-1 2 3 2 3 2h1l-3 5 2 1 1-3 5 7 1 1-16 5 1 1-4-1-18 7 1 1-3-1-13 5v2l-2-1-15 7 1 1h-2q1 2-1 1h-2l-21 10v2h-2l-12 6v2q-2-2-3 1l-10 6v1q-2-2-3 1l-6 4q1 2-2 1l-18 14q1 2-2 1v-2q-3 1-1 3l-3 3-7 5v-1l8-6-3-1q1-3-2-2l1 4h-2q1 3-2 2-2-2-3 1l1 2h-1q1-3-3-2-1 4 2 3v1l-3-1-4 2-1 3-1-3-1 4 2 4 1-3 1 1 2-1-4 5-4 2-20 20h-2l-2 1-3-4-3 1-1-3-2 1 1-2h2v-2l1 1-1-3-2 1-4-3-2 2-4-4-2 1-1-3-4 1q-1-4 2-3v-3q-3-1-2 2l-3 4-1-3-9 8 3-5 1 1 8-8 2-3 24-23-5 6 4 1 2-1h2l4-1 3 2 1 2 1-3v2l4-1 1 1q1-3-2-2v-2h-1v1l-3-5 4 2h1l-2-3 2-1-2-3q2-4 4 0h1v-6l-2 1q1-3 3-1h1v-2q1-3-2-2 1 3-1 2l1-2-1-1 5-5 3-2 36-27h2l36-22 31-15 31-11q-1 3 2 2l1 1v-3l-2 1q-1-3 2-2zm-6 4-2 2h2zm11 7-3 2h3zm1 4v2l2-1zm7 2-1 2 2 1zm-171 88q-2 3 1 2zm6 1-3 4-1-2-1 4 2-1v2l2 1-1-2 1-2v2l2-1zm4 2-2 2h2zm14 0-1 4 2-1zm-11 5v3h1q1-4-1-3Zm-5 1v2l2-1zm4 2-2 2q-1 2 2 1zm-47 5 1 2q1-3-1-2Zm-1 1-2 2h2zm43 2q-2 3 1 2zm-51 7-2 2h2zm18 2q-2 3 1 2zm-2 1q-2 3 1 4h1zm-2 2-1 2-2 1q2 3 3 0zm8 0-1 2-1 2 3-1zm4 3-3 2h3zm13 0-1 3h1zm-16 5 1 2h1zm221-141 1 3h-2zm-43 2q2-1 1 2zm15 1 1 4h-2zm17 7 3 1h1q-2 4-3 1-3 1-1-2Zm6 1q3-1 2 2-3 1-2-2Zm-14 2 2 1-2 1zm1 6q2-1 1 2zm62 0 3 1h-3zm61 0 2 1h-2zm-71 1 4 1h-4zm80 0 3 1h-3zm-126 4-1 2zm7 3 2 1h-2zm-252 23 2 1-3 2zm-1 4-1 2zm-4 6-2 3-1 2v-1zm324 0 13 1h-13zm15 0 2 1h-2zm-36 2v3l2-1 3 4-2 1 3 1-1 3h-3q2-2 0-3l-2 1v-4l-1 4-3-1 1 3-2-2-3 2 4 1 3-1 4 4 1 2-1-1-2-1-1 2 1 5q4-1 3 2l1 3-1-1h-2q2-2 0-3l-3 1v-1l1-3-4-1-2 3q3 1 2-1h1l-1 4 3 3 2-1v7q3 0 2 5h-1q1-4-1-3h-2l1 3h1l-1 2h4q1 2-1 1l-1 2 2 1h1l3 3 2 1 1-2 1 1 1-2 1 1 2-3v10l-2-6-1 2h-2l-1 4 1 3-1 2 3 1-2 4 3 5q-3 1-1 3v3l-1-4-1 6 3-1 1-2 2 7-1 2 3 1 2 3 1-2 2 4h1l-1 2h2l3-1q3 2-2 5 1 2-1 1l-1 3-1-1-10 10q-24 23-36 59l-5 16-3 16-1 33 1 1 1 15 2 1-1 4 14 44q4 1 2-4l-2-7v-30l1-1v-10l2-7v-7l2-2-1-2 2-2 2-10 3-6v-2l7-15v-3l7-13 7-9 2-5 1 1q13-22 32-37l14-10 2 2-4 1 2 3 2 1-2 1 1 2h-1v-2q-1 5-5 8l2 4 1-3q-2-2 1-3 2-1 1 2l3 3-2-1 1 3-1 2 4 1 2-3v2l-3 4 3 1-1 2-3-1 1-2-4 1-2-4-2 1 1-2-2-1-1 2q3 1-1 3l-2-1-1 1-4-2-2 3 3 3 1-2v5l4 2 1-3v3l-1 2h3l1-1v-2l3 2-2 4h3l2-3 3 5 3-2 3 2 4-2h4q2-1 1 2l-2 1 1 1-2-1-8 6h4l7-2-1 2q-2-2-3 1h4l2-1q2 4-1 3h-2l1 2-4 2q1 3-1 2l-3-2 2 4q-3-1-2 3l2 1-1 2-2-7q-3-1-2 2v2q-1 2 2 1v1l-3 1 1 2-2-1-3 4 1 2-3 1q-1 3 2 2h2l2 1-1 1-3-1 3 6h2l2 1 2-1 3 1q2-1 1 2l-1-1-8 1-15 5 1 1-4-1v2l-2-1-11 6-8 13-6 20-1 14-1 1v30l1 1 1 14 4 16q4 10 13 16l10 5 23 6 16 1 1 1h20l1-1h8l1-1 11-1 15-4 9-4 7-7q7-10 9-25l-1-2q3-2 3-7l1 1-1-3 2-10-1-3v-2q-1-7 2-9l1 2h1v2h-2l1 3v2l-1 5 5 1 1 2 1-2 2 1 1 3-2 1 2 3 3 1 1-3 1 3 2-1v3h3v4h2q2 4 4 3-1 2 2 1l2-1 1 1 1-2v2q3-1 2 2l2-1 1-2 1 5 2-9v7l-4 21q-4-3-3-10l-1 2-5-3q1-3-2-2l1 3h-2l-4-2v1h-3q1-4-2-3-3-1 0-3l2 1 2 3q2 1 1-1l-1-3 4 3q-1 2 2 1l1-2-4-2q1-3-2-2v-2h-2l-2-3-2 4-2-4q-3-1-2 3l2 3-1 3q1 2-1 1l-3-4h-2q2 4-1 3v2q-1 2 2 1l3 1h1l-1 2 2 2 1-2 1 1q-1-3 3-2l1 3 2 1q-3 1-1 3l-1 2 2 2 1-2-1-2 3 2 1 1 3-6v3l1 2-3-1 1 4 3-1 4 4 1 1 1-2q-2-2 1-3v3q-14 51-47 83l-3 2-20 17q1 2-2 1l-7 4v2q-2-2-3 1l-9 4v2h-2v1l-2-1-12 6v-1l24-15q-1-3 2-2l23-17 2 1-1-2 7-6-1 2-3 2 1 3h1l-4 2q-1 2 3 1l3-1 2 1-1-2 3-2q-1 2 2 1l3-1v-4h3l-1 2 2-1 2-1-2-5q-3 1-2-1h-1l-3-2-4 3zm6 9q-3 2 0 3t2-2zm4 0v2l2-1zm3 1-2 3q1 3 6 3l-1-1q1-3-2-2zm-4 2-1 3h3v-2zm7 9-1 2 2 1zm10 6-2 2 2 1zm-13-26 1 2zm-27 2v3h-1zm12 0v3h-1zm33 2v4h-1zm-46 2v3h-1zm32 1q2-1 1 2l1 1zm345 0v6h-1zm-373 2q3-1 2 3l-2-1zm-522 1 1 3-2-1zm517 0v3l-2 5-1-1zm2 1 2 3-3-1zm374 1v4h2v-2q2 1 1 6v1l5 2 3-2 3 2 3-1-1 2 1 3 5-2v2q3 1 1-4h1l1 2q1-2 2 1-1 2 3 1 1-3 3-1l4 2q1-2 2 1h-2l-1 2 4 1 1-3-1-2h1l2 6 1-4-1-2q3-2 3-6v6l-1 1-2 22-5 26-13 48-22 56-16 30h-2l1 2-1-1q-3 1-2-1l1-3q-3-1-2 3h-3v-3l-1 4h-2q2-2 0-3-4-1-5 2v1l-1-4-2 4-2-3-7 2-3-2-3 5 1-3-2-1-1 2-1-1 1-3-3-1-1 2q-3 1-2-2h-1v1l-3-1q4-2 1-3 1-3-2-2v2l-1-4-3 2-3-4-3 4 2 3h-1q1-3-1-2h-2v2q-2-2-3 1 1 2-1 1v2l-2-1-2 3 2-1 2 3q2 1 1-2l3 1 1-2 5 2 1 4h-2q-1 3 4 1l1 2-4 3q1 3-2 2v-2h-2q-5-1-4 2l-3-2q1-3-1-2l-2-1 1 3q1 2-1 1v-2q-3-1-2 2h-4v1l-2-1v2h-2v1l-1-3h-3l1-2h-2l6-5v3q-1 2 2 1l1 1-2-5 26-24q13-15 22-32l8-16 11-28q-2-2 1-3l5-16v-5l2-2 5-19v-7l2-2-1-2 2-3 5-37q-3-2 0-7Zm33 17q-3 4 1 3zm-5 2 1 2q1-3-1-2Zm-78 148q-2 3 1 2zm-8 9v3l2-1zm0 3-4 2 1 2 3-1zm-7 4-1 2v2h3l1-2zm6 1q-3 1-1 3-1 2 2 1zm51 1-1 3h1zm-49 1v2l2-1zm20 8 2 2q1-3-2-2Zm-44 4-2 2 2 1zm-3 2-2 2h2zm16 0q-3 2 0 3 3-1 0-3Zm-6 2v2h3l1-1zm0 3q-3 2 0 3 2 1 1-2h2zm5 0-1 4h3l1-3zm116-205v6h-1zm-805 1v5h-1zm392 1 1 3-2-1zm35 3v3h-1zm358 1 2 1v2l2 2 2-1v1l-4 1q1-3-2-2zm-628 1 1 2zm622 1v4l-2 1-1-2zm-401 1v2l-10 12-2 1 1-2 7-6zm48 0v3h-1zm-181 3 1 2zm7 7 1 2zm-252 2v5h-1zm117 0 1 2zm138 0 1 2zm-75 10 1 2zm106 0 2 1h-2zm6 1 3 1h-3zm37 0 3 1h-3zm-26 1 20 1h-20zm-117 3 2 3zm-56 1 1 2zm61 3 1 2zm3 2 1 2zm3 2 1 2zm252 0v2l-1 5-1-4zm-405 5v3h-1zm101 3 2 3zm302 0v3h-1zm-1 4 1 4h-2v2l-1-2zm-40 6-1 2zm38 1v3l-1 2-1-2zm-41 4-1 2zm45 0 3 3v1l-1-2-2 1zm-6 2v2l-2 4-1-1zm-41 1-1 2zm-66 1q4-1 3 2l-1-1q-3 1-2-1Zm-70 1 2 1h-2zm65 0 2 1h-2zm-59 1 2 1h-2zm53 0 3 1h-3zm75 0-1 2zm-120 1 5 1h-5zm35 0 5 1h-5zm125 2v2l-1 2-1-1zm-46 5-1 2zm43 2-1 2-4 8v-1zm-340 1 2 1-2 1zm294 1-2 3zm99 2 1 2zm-103 3-4 5zm101 1v4h-1l-1-2zm4 1v2l-1 2-1-1zm-254 2 2 1h-2zm30 0 2 1h-2zm-16 1 5 1h-5zm178 1-2 3zm59 3v2l-1 2-1-1zm-3 1v2l-2 1zm69 1-7 8-1 2v-1zm15 0 1 3h-3zm-195 1-5 6zm51 0-1 2zm-2 3-2 3zm-3 4-1 2zm-55 1-2 3zm179 2-4 5 2 1 3-1-1-2 5 3h2l-1-3 2 1v1q3-1 2 2l2-1 1 1-2 1h2l3-1q3 2-2 5 1 2-1 1l-1 3-1-1-10 10q-24 23-36 59l-5 16-3 16-1 33 1 1 1 15 2 1-1 4 14 44q4 1 2-4l-2-7v-30l1-1v-10l2-7v-7l2-2-1-2 2-2 2-10 3-6v-2l7-15v-3l7-13 7-9 2-5 1 1q13-22 32-37l14-10 2 2-4 1 2 3 2 1-2 1 1 2h-1v-2q-1 5-5 8l2 4 1-3q-2-2 1-3 2-1 1 2l3 3-2-1 1 3-1 2 4 1 2-3v2l-3 4 3 1-1 2-3-1 1-2-4 1-2-4-2 1 1-2-2-1-1 2q3 1-1 3l-2-1-1 1-4-2-2 3 3 3 1-2v5l4 2 1-3v3l-1 2h3l1-1v-2l3 2-2 4h3l2-3 3 5 3-2 3 2 4-2h4q2-1 1 2l-2 1 1 1-2-1-8 6h4l7-2-1 2q-2-2-3 1h4l2-1q2 4-1 3h-2l1 2-4 2q1 3-1 2l-3-2 2 4q-3-1-2 3l2 1-1 2-2-7q-3-1-2 2v2q-1 2 2 1v1l-3 1 1 2-2-1-3 4 1 2-3 1q-1 3 2 2h2l2 1-1 1-3-1 3 6h2l2 1 2-1 3 1q2-1 1 2l-1-1-8 1-15 5 1 1-4-1v2l-2-1-11 6-8 13-6 20-1 14-1 1v30l1 1 1 14 4 16q4 10 13 16l10 5 23 6 16 1 1 1h20l1-1h8l1-1 11-1 15-4 9-4 7-7q7-10 9-25l-1-2q3-2 3-7l1 1-1-3 2-10-1-3v-2q-1-7 2-9l1 2h1v2h-2l1 3v2l-1 5 5 1 1 2 1-2 2 1 1 3-2 1 2 3 3 1 1-3 1 3 2-1v3h3v4h2q2 4 4 3-1 2 2 1l2-1 1 1 1-2v2q3-1 2 2l2-1 1-2 1 5 2-9v7l-4 21q-4-3-3-10l-1 2-5-3q1-3-2-2l1 3h-2l-4-2v1h-3q1-4-2-3-3-1 0-3l2 1 2 3q2 1 1-1l-1-3 4 3q-1 2 2 1l1-2-4-2q1-3-2-2v-2h-2l-2-3-2 4-2-4q-3-1-2 3l2 3-1 3q1 2-1 1l-3-4h-2q2 4-1 3v2q-1 2 2 1l3 1h1l-1 2 2 2 1-2 1 1q-1-3 3-2l1 3 2 1q-3 1-1 3l-1 2 2 2 1-2-1-2 3 2 1 1 3-6v3l1 2-3-1 1 4 3-1 4 4 1 1 1-2q-2-2 1-3v3q-14 51-47 83l-3 2-20 17q1 2-2 1l-7 4v2q-2-2-3 1l-9 4v2h-2v1l-2-1-12 6v-1l24-15q-1-3 2-2l23-17 2 1-1-2 7-6-1 2-3 2 1 3h1l-4 2q-1 2 3 1l3-1 2 1-1-2 3-2q-1 2 2 1l3-1v-4h3l-1 2 2-1 2-1-2-5q-3 1-2-1h-1l-3-2-4 3zm6 9q-3 2 0 3t2-2zm4 0v2l2-1zm3 1-2 3q1 3 6 3l-1-1q1-3-2-2zm-4 2-1 3h3v-2zm7 9-1 2 2 1zm10 6-2 2 2 1zm-13-26 1 2zm-27 2v3h-1zm12 0v3h-1zm33 2v4h-1zm-46 2v3h-1zm32 1q2-1 1 2l1 1zm345 0v6h-1zm-373 2q3-1 2 3l-2-1zm-522 1 1 3-2-1zm517 0v3l-2 5-1-1zm2 1 2 3-3-1zm374 1v4h2v-2q2 1 1 6v1l5 2 3-2 3 2 3-1-1 2 1 3 5-2v2q3 1 1-4h1l1 2q1-2 2 1-1 2 3 1 1-3 3-1l4 2q1-2 2 1h-2l-1 2 4 1 1-3-1-2h1l2 6 1-4-1-2q3-2 3-6v6l-1 1-2 22-5 26-13 48-22 56-16 30h-2l1 2-1-1q-3 1-2-1l1-3q-3-1-2 3h-3v-3l-1 4h-2q2-2 0-3-4-1-5 2v1l-1-4-2 4-2-3-7 2-3-2-3 5 1-3-2-1-1 2-1-1 1-3-3-1-1 2q-3 1-2-2h-1v1l-3-1q4-2 1-3 1-3-2-2v2l-1-4-3 2-3-4-3 4 2 3h-1q1-3-1-2h-2v2q-2-2-3 1 1 2-1 1v2l-2-1-2 3 2-1 2 3q2 1 1-2l3 1 1-2 5 2 1 4h-2q-1 3 4 1l1 2-4 3q1 3-2 2v-2h-2q-5-1-4 2l-3-2q1-3-1-2l-2-1 1 3q1 2-1 1v-2q-3-1-2 2h-4v1l-2-1v2h-2v1l-1-3h-3l1-2h-2l6-5v3q-1 2 2 1l1 1-2-5 26-24q13-15 22-32l8-16 11-28q-2-2 1-3l5-16v-5l2-2 5-19v-7l2-2-1-2 2-3 5-37q-3-2 0-7Zm33 17q-3 4 1 3zm-5 2 1 2q1-3-1-2Zm-78 148q-2 3 1 2zm-8 9v3l2-1zm0 3-4 2 1 2 3-1zm-7 4-1 2v2h3l1-2zm6 1q-3 1-1 3-1 2 2 1zm51 1-1 3h1zm-49 1v2l2-1zm20 8 2 2q1-3-2-2Zm-44 4-2 2 2 1zm-3 2-2 2h2zm16 0q-3 2 0 3 3-1 0-3Zm-6 2v2h3l1-1zm0 3q-3 2 0 3 2 1 1-2h2zm5 0-1 4h3l1-3zm116-205v6h-1zm-805 1v5h-1zm392 1 1 3-2-1zm35 3v3h-1zm358 1 2 1v2l2 2 2-1v1l-4 1q1-3-2-2zm-628 1 1 2zm622 1v4l-2 1-1-2zm-401 1v2l-10 12-2 1 1-2 7-6zm48 0v3h-1zm-181 3 1 2zm7 7 1 2zm-252 2v5h-1zm117 0 1 2zm138 0 1 2zm-75 10 1 2zm106 0 2 1h-2zm6 1 3 1h-3zm37 0 3 1h-3zm-26 1 20 1h-20zm-117 3 2 3zm-56 1 1 2zm61 3 1 2zm3 2 1 2zm3 2 1 2zm252 0v2l-1 5-1-4zm-405 5v3h-1zm101 3 2 3zm302 0v3h-1zm-1 4 1 4h-2v2l-1-2zm-40 6-1 2zm38 1v3l-1 2-1-2zm-41 4-1 2zm45 0 3 3v1l-1-2-2 1zm-6 2v2l-2 4-1-1zm-41 1-1 2zm-66 1q4-1 3 2l-1-1q-3 1-2-1Zm-70 1 2 1h-2zm65 0 2 1h-2zm-59 1 2 1h-2zm53 0 3 1h-3zm75 0-1 2zm-120 1 5 1h-5zm35 0 5 1h-5zm125 2v2l-1 2-1-1zm-46 5-1 2zm43 2-1 2-4 8v-1zm-340 1 2 1-2 1zm294 1-2 3zm99 2 1 2zm-103 3-4 5zm101 1v4h-1l-1-2zm4 1v2l-1 2-1-1zm-254 2 2 1h-2zm30 0 2 1h-2zm-16 1 5 1h-5zm178 1-2 3zm59 3v2l-1 2-1-1zm-3 1v2l-2 1zm69 1-7 8-1 2v-1zm15 0 1 3h-3zm-195 1-5 6zm51 0-1 2zm-2 3-2 3zm-3 4-1 2zm-55 1-2 3zm179 2-4 5 2 1 3-1-1-2 5 3h2l-1-3 2 1v1q3-1 2 2l2-1 1 1-2 1h2l3-1q3 2-2 5 1 2-1 1l-1 3-1-1-10 10q-24 23-36 59l-5 16-3 16-1 33 1 1 1 15 2 1-1 4 14 44q4 1 2-4l-2-7v-30l1-1v-10l2-7v-7l2-2-1-2 2-2 2-10 3-6v-2l7-15v-3l7-13 7-9 2-5 1 1q13-22 32-37l14-10 2 2-4 1 2 3 2 1-2 1 1 2h-1v-2q-1 5-5 8l2 4 1-3q-2-2 1-3 2-1 1 2l3 3-2-1 1 3-1 2 4 1 2-3v2l-3 4 3 1-1 2-3-1 1-2-4 1-2-4-2 1 1-2-2-1-1 2q3 1-1 3l-2-1-1 1-4-2-2 3 3 3 1-2v5l4 2 1-3v3l-1 2h3l1-1v-2l3 2-2 4h3l2-3 3 5 3-2 3 2 4-2h4q2-1 1 2l-2 1 1 1-2-1-8 6h4l7-2-1 2q-2-2-3 1h4l2-1q2 4-1 3h-2l1 2-4 2q1 3-1 2l-3-2 2 4q-3-1-2 3l2 1-1 2-2-7q-3-1-2 2v2q-1 2 2 1v1l-3 1 1 2-2-1-3 4 1 2-3 1q-1 3 2 2h2l2 1-1 1-3-1 3 6h2l2 1 2-1 3 1q2-1 1 2l-1-1-8 1-15 5 1 1-4-1v2l-2-1-11 6-8 13-6 20-1 14-1 1v30l1 1 1 14 4 16q4 10 13 16l10 5 23 6 16 1 1 1h20l1-1h8l1-1 11-1 15-4 9-4 7-7q7-10 9-25l-1-2q3-2 3-7l1 1-1-3 2-10-1-3v-2q-1-7 2-9l1 2h1v2h-2l1 3v2l-1 5 5 1 1 2 1-2 2 1 1 3-2 1 2 3 3 1 1-3 1 3 2-1v3h3v4h2q2 4 4 3-1 2 2 1l2-1 1 1 1-2v2q3-1 2 2l2-1 1-2 1 5 2-9v7l-4 21q-4-3-3-10l-1 2-5-3q1-3-2-2l1 3h-2l-4-2v1h-3q1-4-2-3-3-1 0-3l2 1 2 3q2 1 1-1l-1-3 4 3q-1 2 2 1l1-2-4-2q1-3-2-2v-2h-2l-2-3-2 4-2-4q-3-1-2 3l2 3-1 3q1 2-1 1l-3-4h-2q2 4-1 3v2q-1 2 2 1l3 1h1l-1 2 2 2 1-2 1 1q-1-3 3-2l1 3 2 1q-3 1-1 3l-1 2 2 2 1-2-1-2 3 2 1 1 3-6v3l1 2-3-1 1 4 3-1 4 4 1 1 1-2q-2-2 1-3v3q-14 51-47 83l-3 2-20 17q1 2-2 1l-7 4v2q-2-2-3 1l-9 4v2h-2v1l-2-1-12 6v-1l24-15q-1-3 2-2l23-17 2 1-1-2 7-6-1 2-3 2 1 3h1l-4 2q-1 2 3 1l3-1 2 1-1-2 3-2q-1 2 2 1l3-1v-4h3l-1 2 2-1 2-1-2-5q-3 1-2-1h-1l-3-2-4 3zm6 9q-3 2 0 3t2-2zm4 0v2l2-1zm3 1-2 3q1 3 6 3l-1-1q1-3-2-2zm-4 2-1 3h3v-2zm7 9-1 2 2 1zm10 6-2 2 2 1zm-13-26 1 2zm-27 2v3h-1zm12 0v3h-1zm33 2v4h-1zm-46 2v3h-1zm32 1q2-1 1 2l1 1zm345 0v6h-1zm-373 2q3-1 2 3l-2-1zm-522 1 1 3-2-1zm517 0v3l-2 5-1-1zm2 1 2 3-3-1zm374 1v4h2v-2q2 1 1 6v1l5 2 3-2 3 2 3-1-1 2 1 3 5-2v2q3 1 1-4h1l1 2q1-2 2 1-1 2 3 1 1-3 3-1l4 2q1-2 2 1h-2l-1 2 4 1 1-3-1-2h1l2 6 1-4-1-2q3-2 3-6v6l-1 1-2 22-5 26-13 48-22 56-16 30h-2l1 2-1-1q-3 1-2-1l1-3q-3-1-2 3h-3v-3l-1 4h-2q2-2 0-3-4-1-5 2v1l-1-4-2 4-2-3-7 2-3-2-3 5 1-3-2-1-1 2-1-1 1-3-3-1-1 2q-3 1-2-2h-1v1l-3-1q4-2 1-3 1-3-2-2v2l-1-4-3 2-3-4-3 4 2 3h-1q1-3-1-2h-2v2q-2-2-3 1 1 2-1 1v2l-2-1-2 3 2-1 2 3q2 1 1-2l3 1 1-2 5 2 1 4h-2q-1 3 4 1l1 2-4 3q1 3-2 2v-2h-2q-5-1-4 2l-3-2q1-3-1-2l-2-1 1 3q1 2-1 1v-2q-3-1-2 2h-4v1l-2-1v2h-2v1l-1-3h-3l1-2h-2l6-5v3q-1 2 2 1l1 1-2-5 26-24q13-15 22-32l8-16 11-28q-2-2 1-3l5-16v-5l2-2 5-19v-7l2-2-1-2 2-3 5-37q-3-2 0-7Zm33 17q-3 4 1 3zm-5 2 1 2q1-3-1-2Zm-78 148q-2 3 1 2zm-8 9v3l2-1zm0 3-4 2 1 2 3-1zm-7 4-1 2v2h3l1-2zm6 1q-3 1-1 3-1 2 2 1zm51 1-1 3h1zm-49 1v2l2-1zm20 8 2 2q1-3-2-2Zm-44 4-2 2 2 1zm-3 2-2 2h2zm16 0q-3 2 0 3 3-1 0-3Zm-6 2v2h3l1-1zm0 3q-3 2 0 3 2 1 1-2h2zm5 0-1 4h3l1-3zm116-205v6h-1zm-805 1v5h-1zm392 1 1 3-2-1zm35 3v3h-1zm358 1 2 1v2l2 2 2-1v1l-4 1q1-3-2-2zm-628 1 1 2zm622 1v4l-2 1-1-2zm-401 1v2l-10 12-2 1 1-2 7-6zm48 0v3h-1zm-181 3 1 2zm7 7 1 2zm-252 2v5h-1zm117 0 1 2zm138 0 1 2zm-75 10 1 2zm106 0 2 1h-2zm6 1 3 1h-3zm37 0 3 1h-3zm-26 1 20 1h-20zm-117 3 2 3zm-56 1 1 2zm61 3 1 2zm3 2 1 2zm3 2 1 2zm252 0v2l-1 5-1-4zm-405 5v3h-1zm101 3 2 3zm302 0v3h-1zm-1 4 1 4h-2v2l-1-2zm-40 6-1 2zm38 1v3l-1 2-1-2zm-41 4-1 2zm45 0 3 3v1l-1-2-2 1zm-6 2v2l-2 4-1-1zm-41 1-1 2zm-66 1q4-1 3 2l-1-1q-3 1-2-1Zm-70 1 2 1h-2zm65 0 2 1h-2zm-59 1 2 1h-2zm53 0 3 1h-3zm75 0-1 2zm-120 1 5 1h-5zm35 0 5 1h-5zm125 2v2l-1 2-1-1zm-46 5-1 2zm43 2-1 2-4 8v-1zm-340 1 2 1-2 1zm294 1-2 3zm99 2 1 2zm-103 3-4 5zm101 1v4h-1l-1-2zm4 1v2l-1 2-1-1zm-254 2 2 1h-2zm30 0 2 1h-2zm-16 1 5 1h-5zm178 1-2 3zm59 3v2l-1 2-1-1zm-3 1v2l-2 1zm69 1-7 8-1 2v-1zm15 0 1 3h-3zm-195 1-5 6zm51 0-1 2zm-2 3-2 3zm-3 4-1 2zm-55 1-2 3zm179 2-4 5 2 1 3-1-1-2 5 3h2l-1-3 2 1v1q3-1 2 2l2-1 1 1-2 1h2l3-1q3 2-2 5 1 2-1 1l-1 3-1-1-10 10q-24 23-36 59l-5 16-3 16-1 33 1 1 1 15 2 1-1 4 14 44q4 1 2-4l-2-7v-30l1-1v-10l2-7v-7l2-2-1-2 2-2 2-10 3-6v-2l7-15v-3l7-13 7-9 2-5 1 1q13-22 32-37l14-10 2 2-4 1 2 3 2 1-2 1 1 2h-1v-2q-1 5-5 8l2 4 1-3q-2-2 1-3 2-1 1 2l3 3-2-1 1 3-1 2 4 1 2-3v2l-3 4 3 1-1 2-3-1 1-2-4 1-2-4-2 1 1-2-2-1-1 2q3 1-1 3l-2-1-1 1-4-2-2 3 3 3 1-2v5l4 2 1-3v3l-1 2h3l1-1v-2l3 2-2 4h3l2-3 3 5 3-2 3 2 4-2h4q2-1 1 2l-2 1 1 1-2-1-8 6h4l7-2-1 2q-2-2-3 1h4l2-1q2 4-1 3h-2l1 2-4 2q1 3-1 2l-3-2 2 4q-3-1-2 3l2 1-1 2-2-7q-3-1-2 2v2q-1 2 2 1v1l-3 1 1 2-2-1-3 4 1 2-3 1q-1 3 2 2h2l2 1-1 1-3-1 3 6h2l2 1 2-1 3 1q2-1 1 2l-1-1-8 1-15 5 1 1-4-1v2l-2-1-11 6-8 13-6 20-1 14-1 1v30l1 1 1 14 4 16q4 10 13 16l10 5 23 6 16 1 1 1h20l1-1h8l1-1 11-1 15-4 9-4 7-7q7-10 9-25l-1-2q3-2 3-7l1 1-1-3 2-10-1-3v-2q-1-7 2-9l1 2h1v2h-2l1 3v2l-1 5 5 1 1 2 1-2 2 1 1 3-2 1 2 3 3 1 1-3 1 3 2-1v3h3v4h2q2 4 4 3-1 2 2 1l2-1 1 1 1-2v2q3-1 2 2l2-1 1-2 1 5 2-9v7l-4 21q-4-3-3-10l-1 2-5-3q1-3-2-2l1 3h-2l-4-2v1h-3q1-4-2-3-3-1 0-3l2 1 2 3q2 1 1-1l-1-3 4 3q-1 2 2 1l1-2-4-2q1-3-2-2v-2h-2l-2-3-2 4-2-4q-3-1-2 3l2 3-1 3q1 2-1 1l-3-4h-2q2 4-1 3v2q-1 2 2 1l3 1h1l-1 2 2 2 1-2 1 1q-1-3 3-2l1 3 2 1q-3 1-1 3l-1 2 2 2 1-2-1-2 3 2 1 1 3-6v3l1 2-3-1 1 4 3-1 4 4 1 1 1-2q-2-2 1-3v3q-14 51-47 83l-3 2-20 17q1 2-2 1l-7 4v2q-2-2-3 1l-9 4v2h-2v1l-2-1-12 6v-1l24-15q-1-3 2-2l23-17 2 1-1-2 7-6-1 2-3 2 1 3h1l-4 2q-1 2 3 1l3-1 2 1-1-2 3-2q-1 2 2 1l3-1v-4h3l-1 2 2-1 2-1-2-5q-3 1-2-1h-1l-3-2-4 3zm6 9q-3 2 0 3t2-2zm4 0v2l2-1zm3 1-2 3q1 3 6 3l-1-1q1-3-2-2zm-4 2-1 3h3v-2zm7 9-1 2 2 1zm10 6-2 2 2 1zm-13-26 1 2zm-27 2v3h-1zm12 0v3h-1zm33 2v4h-1zm-46 2v3h-1zm32 1q2-1 1 2l1 1zm345 0v6h-1zm-373 2q3-1 2 3l-2-1zm-522 1 1 3-2-1zm517 0v3l-2 5-1-1zm2 1 2 3-3-1zm374 1v4h2v-2q2 1 1 6v1l5 2 3-2 3 2 3-1-1 2 1 3 5-2v2q3 1 1-4h1l1 2q1-2 2 1-1 2 3 1 1-3 3-1l4 2q1-2 2 1h-2l-1 2 4 1 1-3-1-2h1l2 6 1-4-1-2q3-2 3-6v6l-1 1-2 22-5 26-13 48-22 56-16 30h-2l1 2-1-1q-3 1-2-1l1-3q-3-1-2 3h-3v-3l-1 4h-2q2-2 0-3-4-1-5 2v1l-1-4-2 4-2-3-7 2-3-2-3 5 1-3-2-1-1 2-1-1 1-3-3-1-1 2q-3 1-2-2h-1v1l-3-1q4-2 1-3 1-3-2-2v2l-1-4-3 2-3-4-3 4 2 3h-1q1-3-1-2h-2v2q-2-2-3 1 1 2-1 1v2l-2-1-2 3 2-1 2 3q2 1 1-2l3 1 1-2 5 2 1 4h-2q-1 3 4 1l1 2-4 3q1 3-2 2v-2h-2q-5-1-4 2l-3-2q1-3-1-2l-2-1 1 3q1 2-1 1v-2q-3-1-2 2h-4v1l-2-1v2h-2v1l-1-3h-3l1 2h-2l6 5v-3q-1-2-2-1l-1 1-2-5 26 24q-13 15-22 32l-8 16-11 28q2 2-1 3l-5 16v5l-2 2-5 19v7l-2 2 1 2-2 3-5 37q3 2 0 7Zm-33-17q3-4-1-3zm5-2-1-2q-1 3 1 2Zm78-148q2-3-1-2zm8-9v-3l-2 1Zm0-3l4-2-1-2-3 1Zm7-4l1-2v-2h-3l-1 2Zm-6-1q3-1 1-3 1-2-2-1Zm-51-1l1-3h-1Zm49-1v-2l-2 1Zm-20-8-2-2q-1 3 2 2Zm44-4l2-2-2-1Zm3-2l2-2h-2Zm-16 0q3-2 0-3-3 1 0 3Zm6-2v-2h-3l-1 1Zm0-3q3-2 0-3-2-1-1 2h-2Zm-5 0l1-4h-3l-1 3Zm-116 205v-6h1Zm805-1v-5h1Zm-392-1-1-3l2 1Zm-35-3v-3h1Zm-358-1-2-1v-2l-2-2-2 1v-1l4-1q-1 3 2 2Zm628-1-1-2Zm-622-1v-4l2-1 1 2Zm401-1v-2l10-12 2-1-1 2-7 6Zm-48 0v-3h1Zm181-3-1-2Zm-7-7-1-2Zm252-2v-5h1Zm-117 0-1-2Zm-138 0-1-2Zm75-10-1-2Zm-106 0-2-1h2Zm-6-1-3-1h3Zm-37 0-3-1h3Zm26-1-20-1h20Zm117-3-2-3Zm56-1-1-2Zm-61-3-1-2Zm-3-2-1-2Zm-3-2-1-2Zm-252 0v-2l1-5 1 4Zm405-5v-3h1Zm-101-3-2-3Zm-302 0v-3h1Zm1-4-1-4h2v-2l1 2Zm40-6l1-2Zm-38-1v-3l1-2 1 2Zm41-4l1-2Zm-45 0-3-3v-1l1 2 2-1Zm6-2v-2l2-4 1 1Zm41-1l1-2Zm66-1q-4 1-3-2l1 1q3-1 2 1Zm70-1-2-1h2Zm-65 0-2-1h2Zm59-1-2-1h2Zm-53 0-3-1h3Zm-75 0l1-2Zm120-1-5-1h5Zm-35 0-5-1h5Zm-125-2v-2l1-2 1 1Zm46-5l1-2Zm-43-2l1-2 4-8v1Zm340-1-2-1 2-1Zm-294-1l2-3Zm-99-2-1-2Zm103-3l4-5Zm-101-1v-4h1l1 2Zm-4-1v-2l1-2 1 1Zm254-2-2-1h2Zm-30 0-2-1h2Zm16-1-5-1h5Zm-178-1l2-3Zm-59-3v-2l1-2 1 1Zm3-1v-2l2-1Zm-69-1l7-8 1-2v1Zm-15 0-1-3h3Zm195-1l5-6Zm-51 0l1-2Zm2-3l2-3Zm3-4l1-2Zm55-1l2-3Zm-179-2l4-5-2-1-3 1 1 2-5-3h-2l1 3-2-1v-1q-3 1-2-2l-2 1-1-1 2-1h-2l-3 1q-3-2 2-5-1-2 1-1l1-3 1 1 10-10q24-23 36-59l5-16 3-16 1-33-1-1-1-15-2-1 1-4-14-44q-4-1-2 4l2 7v30l-1 1v10l-2 7v7l-2 2 1 2-2 2-2 10-3 6v2l-7 15v3l-7 13-7 9-2 5-1-1q-13 22-32 37l-14 10-2-2 4-1-2-3-2-1 2-1-1-2h1v2q1-5 5-8l-2-4-1 3q2 2-1 3-2 1-1-2l-3-3 2 1-1-3 1-2-4-1-2 3v-2l3-4-3-1 1-2 3 1-1 2 4-1 2 4 2-1-1 2 2 1 1-2q-3-1 1-3l2 1 1-1 4 2 2-3-3-3-1 2v-5l-4-2-1 3v-3l1-2h-3l-1 1v2l-3-2 2-4h-3l-2 3-3-5-3 2-3-2-4 2h-4q-2 1-1-2l2-1-1-1 2 1 8-6h-4l-7 2 1-2q2 2 3-1h-4l-2 1q-2-4 1-3h2l-1-2 4-2q-1-3 1-2l3 2-2-4q3 1 2-3l-2-1 1-2 2 7q3 1 2-2v-2q1-2-2-1v-1l3-1-1-2 2 1 3-4-1-2 3-1q1-3-2-2h-2l-2-1 1-1 3 1-3-6h-2l-2-1-2 1-3-1q-2 1-1-2l1 1 8-1 15-5-1-1 4 1v-2l2 1 11-6 8-13 6-20 1-14 1-1v-30l-1-1-1-14-4-16q-4-10-13-16l-10-5-23-6-16-1-1-1h-20l-1 1h-8l-1 1-11 1-15 4-9 4-7 7q-7 10-9 25l1 2q-3 2-3 7l-1-1 1 3-2 10 1 3v2q1 7-2 9l-1-2h-1v-2h2l-1-3v-2l1-5-5-1-1-2-1 2-2-1-1-3 2-1-2-3-3-1-1 3-1-3-2 1v-3h-3v-4h-2q-2-4-4-3 1-2-2-1l-2 1-1-1-1 2v-2q-3 1-2-2l-2 1-1 2-1-5-2 9v-7l4-21q4 3 3 10l1-2 5 3q-1 3 2 2l-1-3h2l4 2v-1h3q-1 4 2 3 3 1 0 3l-2-1-2-3q-2-1-1 1l1 3-4-3q1-2-2-1l-1 2 4 2q-1 3 2 2v2h2l2 3 2-4 2 4q3 1 2-3l-2-3 1-3q-1-2 1-1l3 4h2q-2-4 1-3v-2q1-2-2-1l-3-1h-1l1-2-2-2-1 2-1-1q1 3-3 2l-1-3-2-1q3-1 1-3l1-2-2-2-1 2 1 2-3-2-1-1-3 6v-3l-1-2 3 1-1-4-3 1-4-4-1-1-1 2q2 2-1 3v-3q14-51 47-83l3-2 20-17q-1-2 2-1l7-4v-2q2 2 3-1l9-4v-2h2v-1l2 1 12-6v1l-24 15q1 3-2 2l-23 17-2-1 1 2-7 6 1-2 3-2-1-3h-1l4-2q1-2-3-1l-3 1-2-1 1 2-3 2q1-2-2-1l-3 1v4h-3l1-2-2 1-2 1 2 5q3-1 2 1h1l3 2 4-3Zm-6-9q3-2 0-3-2 1-2 2Zm-4 0v-2l-2 1Zm-3-1l2-3q-1-3-6-3l1 1q-1 3 2 2Zm4-2l1-3h-3v2Zm-7-9l1-2-2-1Zm-10-6l2-2-2-1Zm13 26-1-2Zm27-2v-3h1Zm-12 0v-3h1Zm-33-2v-4h1Zm46-2v-3h1Zm-32-1q-2 1-1-2l-1-1Zm-345 0v-6h1Zm373-2q-3 1-2-3l2 1Zm522-1-1-3l2 1Zm-517 0v-3l2-5 1 1Zm-2-1-2-3l3 1Zm-374-1v-4h-2v2q-2-1-1-6v-1l-5-2-3 2-3-2-3 1 1-2-1-3-5 2v-2q-3-1-1 4h-1l-1-2q-1 2-2-1 1-2-3-1-1 3-3 1l-4-2q-1 2-2-1h2l1-2-4-1-1 3 1 2h-1l-2-6-1 4 1 2q-3 2-3 6v-6l1-1 2-22 5-26 13-48 22-56 16-30h2l-1-2 1 1q3-1 2 1l-1 3q3 1 2-3h3v3l1-4h2q-2 2 0 3 4 1 5-2v-1l1 4 2-4 2 3 7-2 3 2 3-5-1 3 2 1 1-2 1 1-1 3 3 1 1-2q3-1 2 2h1v-1l3 1q-4 2-1 3-1 3 2 2v-2l1 4 3-2 3 4 3-4-2-3h1q-1 3 1 2h2v-2q2 2 3-1-1-2 1-1v-2l2 1 2-3-2 1-2-3q-2-1-1 2l-3-1-1 2-5-2-1-4h2q1-3-4-1l-1-2 4-3q-1-3 2-2v2h2q5 1 4-2l3 2q-1 3 1 2l2 1-1-3q-1-2 1-1v2q3 1 2-2h4v-1l2 1v-2h2v-1l1 3h3l-1 2h2l-6 5v-3q1-2-2-1l-1-1 2 5-26 24q-13 15-22 32l-8 16-11 28q2 2-1 3l-5 16v5l-2 2-5 19v7l-2 2 1 2-2 3-5 37q3 2 0 7Z"/></symbol>
+  </svg>
 
-  <div class="content">
-    <div class="field-label">
-      <span>Anthropic API Key</span>
-      <a href="https://console.anthropic.com/account/keys" target="_blank">Get a key →</a>
-    </div>
-    <div class="input-wrapper">
-      <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off" />
-      <button class="toggle-visibility" id="toggle-vis" title="Show/hide key">
-        <svg id="eye-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-        </svg>
-      </button>
-    </div>
-    <button class="save-btn" id="save-btn">Save API Key</button>
-    <div class="status" id="status-msg"></div>
-
-    <div class="key-status">
-      <div class="dot" id="key-dot"></div>
-      <span id="key-status-text">No API key saved</span>
-    </div>
-
-    <hr class="divider" />
-
-    <div class="info-section">
-      <h3>How to use</h3>
-      <div class="step">
-        <div class="step-num">1</div>
-        <span>Add your Anthropic API key above (it's stored locally in your browser)</span>
+  <!-- POPUP CARD -->
+  <div class="cory-popup">
+    <!-- HEADER -->
+    <header class="cory-popup-header">
+      <svg class="cory-popup-logo" role="img" aria-label="Cory logo">
+        <use href="#cory-logo"/>
+      </svg>
+      <div class="cory-popup-title-section">
+        <h1 class="cory-popup-title">Cory</h1>
+        <p class="cory-popup-subtitle">API Configuration</p>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <span>Navigate to DegreeWorks on the CUNY portal</span>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="cory-popup-content">
+      <!-- API Key Field -->
+      <div class="cory-field-group">
+        <label class="cory-field-label">
+          <span>Groq API Key</span>
+          <a href="https://console.groq.com/keys" target="_blank">Get a key →</a>
+        </label>
+        <div class="cory-input-wrapper">
+          <input 
+            type="password" 
+            id="api-key-input" 
+            placeholder="gsk_..."
+            autocomplete="off" 
+          />
+          <button class="cory-toggle-visibility" id="toggle-vis" title="Show/hide key">
+            <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <span>Click the <strong>Advisor</strong> button in the bottom-right corner</span>
+
+      <!-- Save Button -->
+      <button class="cory-save-btn" id="save-btn">Save API Key</button>
+
+      <!-- Status Messages -->
+      <div class="cory-status" id="status-msg"></div>
+
+      <!-- Key Status -->
+      <div class="cory-key-status">
+        <div class="cory-status-dot" id="key-dot"></div>
+        <span id="key-status-text">No API key saved</span>
       </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <span>Ask anything about your degree progress, courses, or graduation plan!</span>
+
+      <!-- Divider -->
+      <hr class="cory-divider" />
+
+      <!-- Help Section -->
+      <div class="cory-info-section">
+        <h3>How to use Cory</h3>
+        
+        <div class="cory-step">
+          <div class="cory-step-num">1</div>
+          <span>Add your Groq API key above (stored locally in your browser)</span>
+        </div>
+
+        <div class="cory-step">
+          <div class="cory-step-num">2</div>
+          <span>Click the <strong>Cory</strong> button in the bottom-right corner</span>
+        </div>
+
+        <div class="cory-step">
+          <div class="cory-step-num">3</div>
+          <span>Ask anything you'd like help with!</span>
+        </div>
       </div>
     </div>
   </div>

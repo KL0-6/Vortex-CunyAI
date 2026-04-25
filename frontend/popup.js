@@ -44,11 +44,11 @@ saveBtn.addEventListener("click", () => {
 
 function showStatus(msg, type) {
   statusMsg.textContent = msg;
-  statusMsg.className = `status ${type} show`;
+  statusMsg.className = `cory-status ${type} show`;
   setTimeout(() => statusMsg.classList.remove("show"), 3500);
 }
 
 function setKeyStatus(hasKey) {
-  keyDot.className = `dot ${hasKey ? "active" : "inactive"}`;
+  keyDot.className = `cory-status-dot ${hasKey ? "active" : ""}`;
   keyStatusText.textContent = hasKey ? "API key saved ✓" : "No API key saved";
 }
