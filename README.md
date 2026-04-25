@@ -1,10 +1,13 @@
-# I. Introduction
+Slides: https://docs.google.com/presentation/d/1lsbVdjyM_n1wnhL_O7JCNKSkL_RyO7GyDKmacaVQX1M/edit?slide=id.p12#slide=id.p12
+Website: https://cory.kl0-6.com/
 
-- Vortex is a browser extension that acts as a personal AI academic advisor
+# Introduction
+
+- Cory is a browser extension that acts as a personal AI academic advisor
 - Designed for students in the City University of New York (CUNY)
 - Goal: simplify academic planning with real-time, personalized guidance
 
-# II. How Vortex Works
+# II. How Cory Works
 
 - Connects securely to student accounts after login
 - Integrates with tools like DegreeWorks and Schedule Builder
