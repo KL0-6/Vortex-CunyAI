@@ -46,7 +46,7 @@ An AI-powered academic advisor that reads your DegreeWorks audit and helps you p
 ```
 cuny-advisor-extension/
 ├── manifest.json        # Extension config (Manifest V3)
-├── background.js        # Service worker — handles Claude API calls
+├── background.js        # Service worker — handles AI API calls
 ├── content.js           # Injected into DegreeWorks — scraper + chat UI
 ├── panel.css            # Styles for the injected chat panel
 ├── popup.html           # Extension settings popup

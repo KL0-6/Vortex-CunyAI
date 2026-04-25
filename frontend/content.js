@@ -607,7 +607,7 @@ _extractCollegeFromAdviceJump(audit) {
               </button>
             </div>
           </div>
-          <p class="cuny-ft">Cory · Claude-powered · Data stays in your browser</p>
+          <p class="cuny-ft">Cory · AI-powered · Data stays in your browser</p>
         </div>
           </div>
       `;
@@ -822,7 +822,7 @@ _extractCollegeFromAdviceJump(audit) {
       return lines.join('\n');
     },
 
-    // ── Send message to Claude ───────────────────────────────────────────
+    // ── Send message to AI ───────────────────────────────────────────
     async send() {
       const input = document.getElementById("cuny-input");
       const text  = (input.value || "").trim();

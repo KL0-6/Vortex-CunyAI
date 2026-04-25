@@ -3,7 +3,7 @@
   CORY — AI Financial Advisor Chatbox
   ============================================================================
   A drop-in chatbox component. Everything is self-contained: design tokens,
-  SVG logo, chip components, credit bar, and Claude API wiring.
+  SVG logo, chip components, credit bar, and AI API wiring.
 
   HOW TO USE:
     1. Drop this file in or copy the <style>, <body>, <script> sections into
@@ -532,7 +532,7 @@ Below are a few areas we can explore:</div>
 
   <!-- FOOTER ............................................................. -->
   <footer class="cory-footer">
-    <span>Claude-powered · Local Data — Secure Browser Sandbox</span>
+    <span>AI-powered · Local Data — Secure Browser Sandbox</span>
     <button class="cory-footer-settings" aria-label="Settings" type="button">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="3" />
@@ -543,7 +543,7 @@ Below are a few areas we can explore:</div>
 </div>
 
 <!-- ============================================================================
-     SCRIPT — public API + Claude wiring
+     SCRIPT — public API + AI wiring
      ============================================================================ -->
 <script>
 (function() {
@@ -565,7 +565,7 @@ Below are a few areas we can explore:</div>
       "paragraphs). Always remind users you're not a licensed financial advisor " +
       "for major decisions. Never give specific stock picks.",
 
-    model: 'claude-opus-4-7',
+    model: 'AI-opus-4-7',
     maxTokens: 800,
 
     // Cost per message in credits. Each user turn deducts this.
@@ -662,11 +662,11 @@ Below are a few areas we can explore:</div>
   }
 
   // ==========================================================================
-  // CLAUDE API CALL
+  // AI API CALL
   // Calls YOUR backend, which proxies to Anthropic with the API key.
   // Expected backend response: { content: "the assistant's text reply" }
   // ==========================================================================
-  async function callClaude(userMessage) {
+  async function callAI(userMessage) {
     state.messages.push({ role: 'user', content: userMessage });
 
     const payload = {
@@ -726,7 +726,7 @@ Below are a few areas we can explore:</div>
     appendTypingIndicator();
 
     try {
-      const reply = await callClaude(text);
+      const reply = await callAI(text);
       removeTypingIndicator();
       appendMessage('assistant', reply || '(no response)');
     } catch (err) {
