@@ -462,16 +462,18 @@ _extractCollegeFromAdviceJump(audit) {
     dataLoaded:  false,
     targetCollege: null,
     targetCollegeName: null,
+    _restored: false,
 
     init() {
       this._injectSvgSprite().then(() => {
         this.injectHTML();
         this.bindEvents();
+        this._restoreState();
       });
     },
 
     _injectSvgSprite() {
-      return fetch(chrome.runtime.getURL("cory-logo.svg"))
+      return fetch(chrome.runtime.getURL("assets/cory-logo.svg"))
         .then(r => r.text())
         .then(svg => {
           const wrap = document.createElement("div");
@@ -612,11 +614,6 @@ _extractCollegeFromAdviceJump(audit) {
           </div>
       `;
       document.body.appendChild(root);
-      this.addMsg("assistant",
-        "👋 **Hi! I'm Cory, your CUNY Academic Advisor.**\n\n" +
-        "⏳ Waiting for your DegreeWorks audit to load… Once it does, I'll have your full course history, GPA, and requirement progress.\n\n" +
-        "You can start asking questions now and I'll give precise advice as soon as the data arrives!"
-      );
     },
 
     bindEvents() {
@@ -643,6 +640,8 @@ _extractCollegeFromAdviceJump(audit) {
 
       $("btn-clear").onclick = () => {
         this.messages = [];
+        this._restored = false;
+        chrome.storage.local.remove("cuny_advisor_messages");
         this.addMsg("assistant", "Conversation cleared! What would you like to know about your degree progress?");
       };
 
@@ -664,6 +663,7 @@ _extractCollegeFromAdviceJump(audit) {
         const sel = $("transfer-select");
         this.targetCollege = sel.value || null;
         this.targetCollegeName = sel.value ? sel.options[sel.selectedIndex].text : null;
+        this._saveTransfer();
         if (this.targetCollege && this.auditData) this._fetchRules();
       };
     },
@@ -710,26 +710,29 @@ _extractCollegeFromAdviceJump(audit) {
       if (dvStatus) { dvStatus.textContent = "✓ Loaded"; dvStatus.className = "dv-loaded"; }
       if (dvPre)    dvPre.textContent = this.context;
 
-      // Replace welcome message with loaded greeting
-      const firstName = (d.studentName || "").split(",")[1]?.trim().split(" ")[0] || "";
-      const majShort  = (d.major || "").replace("Major in ", "");
-      const ipList    = d.inProgressCourses.map(c => c.code).join(", ");
-      const rem       = d.credits.remaining ?? (d.credits.required - d.credits.applied - d.credits.inProgress);
+      // Show greeting only on first load this session; preserved history is kept as-is
+      if (!this._restored) {
+        const firstName = (d.studentName || "").split(",")[1]?.trim().split(" ")[0] || "";
+        const majShort  = (d.major || "").replace("Major in ", "");
+        const ipList    = d.inProgressCourses.map(c => c.code).join(", ");
+        const rem       = d.credits.remaining ?? (d.credits.required - d.credits.applied - d.credits.inProgress);
 
-      this.messages = [];
-      this.addMsg("assistant",
-        `👋 Hi${firstName ? " **" + firstName + "**" : ""}! I've loaded your DegreeWorks audit.\n\n` +
-        `📊 **${d.credits.percentComplete}% complete** toward your ${d.degreeName}\n` +
-        `📚 Credits done: **${d.credits.applied}** · In progress: **${d.credits.inProgress}** · Still needed: **${rem}**\n` +
-        `🎓 Major: **${majShort}** — ${d.majorRequirements?.percentComplete ?? 0}% done\n` +
-        `⭐ GPA: **${d.gpa.toFixed(3)}**\n` +
-        (ipList ? `🔄 Currently taking: ${ipList}\n` : "") +
-        `\nWhat would you like to know about your path to graduation?`
-      );
+        this.messages = [];
+        this.addMsg("assistant",
+          `👋 Hi${firstName ? " **" + firstName + "**" : ""}! I've loaded your DegreeWorks audit.\n\n` +
+          `📊 **${d.credits.percentComplete}% complete** toward your ${d.degreeName}\n` +
+          `📚 Credits done: **${d.credits.applied}** · In progress: **${d.credits.inProgress}** · Still needed: **${rem}**\n` +
+          `🎓 Major: **${majShort}** — ${d.majorRequirements?.percentComplete ?? 0}% done\n` +
+          `⭐ GPA: **${d.gpa.toFixed(3)}**\n` +
+          (ipList ? `🔄 Currently taking: ${ipList}\n` : "") +
+          `\nWhat would you like to know about your path to graduation?`
+        );
+      }
     },
 
     addMsg(role, content) {
       this.messages.push({ role, content });
+      this._saveMessages();
       this._renderMsgs();
     },
 
@@ -840,22 +843,21 @@ _extractCollegeFromAdviceJump(audit) {
         ? ` The student is planning to transfer to ${this.targetCollegeName}.`
         : '';
       const systemPrompt = this.dataLoaded
-        ? `You are a knowledgeable, warm academic advisor for CUNY students at ${this.college}.${transferNote} You have the student's complete DegreeWorks audit data below. Use it to give precise, specific, actionable advice.
+        ? `You are a concise, direct academic advisor for CUNY students at ${this.college}.${transferNote} You have the student's complete DegreeWorks audit data below. Use it to give precise, specific, actionable advice.
 
 ${this.context}
 ${transferCtx ? '\n' + transferCtx : ''}
 
 Advisor guidelines:
-- Always reference specific course codes, requirement names, and exact credit counts from the audit
-- Be encouraging but realistic about remaining work
-- When suggesting courses, mention any prerequisites you know about
-- Point out courses that satisfy multiple requirements (gen ed + major) when possible
-- If the student asks about something not in the audit data, say so and give general guidance
-- Format lists with bullet points for readability
-- You know CUNY transfer policies, ${this.college} course offerings, CUNY Pathways requirements, and ASAP/MAP program benefits`
+- Keep every response SHORT. 3–5 bullet points or 2–3 sentences max. Never pad or repeat yourself.
+- If a topic has more depth, give the highlights and invite a follow-up ("want more detail on any of these?").
+- Lead with the most important fact. Cut everything the student didn't ask for.
+- Always use specific course codes, requirement names, and exact credit counts from the audit.
+- Point out courses that satisfy multiple requirements (gen ed + major) when possible.
+- You know CUNY transfer policies, ${this.college} course offerings, CUNY Pathways requirements, and ASAP/MAP program benefits.`
 
-        : `You are a helpful CUNY academic advisor at ${this.college}. The student's DegreeWorks audit hasn't loaded yet in the browser.
-Answer general CUNY/${this.college} advising questions as best you can. Let them know that once their audit loads you'll be able to give much more specific advice based on their actual record.`;
+        : `You are a concise CUNY academic advisor. The student's DegreeWorks audit hasn't loaded yet.
+Answer in 2–3 sentences max. Be direct — no lists, no padding. Let them know audit-specific advice is coming once it loads.`;
 
       // Build conversation history (exclude the system-level welcome if data not loaded)
       const history = this.messages
@@ -876,6 +878,45 @@ Answer general CUNY/${this.college} advising questions as best you can. Let them
         this._hideTyping();
         this.isLoading = false;
         this.addMsg("assistant", `⚠️ Something went wrong: ${e.message}`);
+      }
+    },
+
+    // ── Persistence ─────────────────────────────────────────────────────────
+
+    _restoreState() {
+      chrome.storage.local.get(["cuny_advisor_messages", "cuny_advisor_transfer"], result => {
+        if (result.cuny_advisor_messages?.length) {
+          this.messages = result.cuny_advisor_messages;
+          this._restored = true;
+          this._renderMsgs();
+        } else {
+          this.addMsg("assistant",
+            "👋 **Hi! I'm Cory, your CUNY Academic Advisor.**\n\n" +
+            "⏳ Waiting for your DegreeWorks audit to load… Once it does, I'll have your full course history, GPA, and requirement progress.\n\n" +
+            "You can start asking questions now and I'll give precise advice as soon as the data arrives!"
+          );
+        }
+
+        if (result.cuny_advisor_transfer) {
+          const { code, name } = result.cuny_advisor_transfer;
+          this.targetCollege = code || null;
+          this.targetCollegeName = name || null;
+          const sel = document.getElementById("transfer-select");
+          if (sel && code) sel.value = code;
+        }
+      });
+    },
+
+    _saveMessages() {
+      if (!this.dataLoaded) return;
+      chrome.storage.local.set({ cuny_advisor_messages: this.messages.slice(-50) });
+    },
+
+    _saveTransfer() {
+      if (this.targetCollege) {
+        chrome.storage.local.set({ cuny_advisor_transfer: { code: this.targetCollege, name: this.targetCollegeName } });
+      } else {
+        chrome.storage.local.remove("cuny_advisor_transfer");
       }
     },
 
