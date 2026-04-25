@@ -87,6 +87,35 @@
 }
 .cuny-hdr-btns button:hover { background: rgba(255,255,255,.14); color: #fff; }
 
+/* ── Transfer bar ─────────────────────────────────────────────────────────── */
+.cuny-transfer-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  background: #f7f9fc;
+  border-bottom: 1px solid #e2e8f5;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: #445;
+}
+.cuny-transfer-bar > span { font-weight: 600; color: #003366; white-space: nowrap; }
+.cuny-transfer-bar svg { flex-shrink: 0; color: #003366; }
+#transfer-select {
+  flex: 1;
+  border: 1.5px solid #c4cfe8;
+  border-radius: 7px;
+  padding: 3px 7px;
+  font-size: 12px;
+  color: #1a1a2e;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .14s;
+  font-family: inherit;
+}
+#transfer-select:focus { border-color: #003366; }
+
 /* ── Progress bar ─────────────────────────────────────────────────────────── */
 .cuny-prog-wrap {
   background: #f7f9fc;
@@ -214,6 +243,8 @@
   white-space: nowrap;
 }
 .chip:hover { background: #e6ecf8; border-color: #003366; }
+.transfer-chip { border-color: #b8cff0; color: #004a99; }
+.transfer-chip:hover { background: #dce9fa; border-color: #004a99; }
 
 /* ── Input row ────────────────────────────────────────────────────────────── */
 .cuny-input-wrap {

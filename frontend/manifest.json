@@ -6,7 +6,8 @@
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
     "https://*.cuny.edu/*",
-    "https://api.groq.com/*"
+    "https://api.groq.com/*",
+    "https://explorer.cuny.edu/*"
   ],
   "web_accessible_resources": [
     {
